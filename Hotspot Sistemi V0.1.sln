@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2042
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotspot Sistemi V0.1", "Hotspot Sİstemi V0.1\Hotspot Sistemi V0.1.csproj", "{996D6952-18F5-46EA-A891-3E1493D0791B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{996D6952-18F5-46EA-A891-3E1493D0791B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996D6952-18F5-46EA-A891-3E1493D0791B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996D6952-18F5-46EA-A891-3E1493D0791B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996D6952-18F5-46EA-A891-3E1493D0791B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4DB99C04-7690-477C-BA1F-A0340DB77E4E}
+	EndGlobalSection
+EndGlobal

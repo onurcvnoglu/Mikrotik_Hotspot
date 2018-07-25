@@ -1,0 +1,13 @@
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.exe.config
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.exe
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.pdb
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.csprojAssemblyReference.cache
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.Properties.Resources.resources
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.csproj.GenerateResource.cache
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.csproj.CoreCompileInputs.cache
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.exe
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.pdb
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.anaGiris.resources
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.serverBilgi.resources
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.serverEkle.resources
+C:\Users\onur\source\repos\Hotspot Sİstemi V0.1\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.yoneticiAyar.resources
