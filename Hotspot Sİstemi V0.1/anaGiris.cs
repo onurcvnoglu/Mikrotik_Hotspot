@@ -23,8 +23,8 @@ namespace Hotspot_Sİstemi_V0._1
 		}
         private void Form1_Load(object sender, EventArgs e)
         {
-            MikroCek mc=new MikroCek();
-            //mc.VeriAl(listBox1,label1);
+            //MikroCek mc=new MikroCek();
+            //mc.VeriAl(label1);
 
             timer1.Stop();
             textBox1.Text = Properties.Settings.Default["kuladi"].ToString();

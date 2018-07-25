@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,8 @@ namespace Hotspot_Sİstemi_V0._1
 {
     class MikroCek
     {
-        string[] parcalar;
-        public void VeriAl(ListBox listbox,Label label)
+        ArrayList kullaniciVerileri = new ArrayList();
+        public void VeriAl(Label label)
         {
             //MK mikrotik = new MK("192.168.0.1");
             //if (mikrotik.Login("admin", "nurettin1"))
@@ -21,21 +22,9 @@ namespace Hotspot_Sİstemi_V0._1
             //}
             //foreach (string h in mikrotik.Read())
             //{
-            //    listbox.Items.Clear();
-            //    parcalar = h.Split('=');
-            //    //foreach (var item in parcalar)
-            //    //{
-            //    //    listbox.Items.Add(item);
-            //    //}
-            //    for (int i = 0; i < parcalar.Length; i++)
-            //    {
-            //        listbox.Items.Add(i);
-            //        if (i==4)
-            //        {
-            //            label.Text = listbox.Items[i].ToString();
-            //        }
-            //    }
+            //    kullaniciVerileri.Add(h);
             //}
+            //label.Text = kullaniciVerileri[1].ToString();
         }
     }
 }

@@ -115,6 +115,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sAyar.serverGuncelle(ipAdresGuncelTxt, kulAdiGuncelTxt, sifreGuncelTxt, serverAdiGuncelTxt);
             tabPage3_Enter(sender, e);
+            //tabPage4_Enter(sender, e);
         }
 
         private void silBtn_Click(object sender, EventArgs e)
@@ -129,6 +130,7 @@ namespace Hotspot_Sİstemi_V0._1
             sifreGuncelTxt.Text = "";
             guncelleBtn.Enabled = false;
             tabPage3_Enter(sender, e);
+            //tabPage4_Enter(sender, e);
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -140,6 +142,7 @@ namespace Hotspot_Sİstemi_V0._1
             sifreGuncelTxt.Text = "";
             guncelleBtn.Enabled = false;
             silBtn.Enabled = false;
+            //tabPage4_Enter(sender, e);
             tabPage3_Enter(sender, e);
         }
 
@@ -156,6 +159,16 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void tabPage4_Enter(object sender, EventArgs e)
         {
+            tabPage3_Enter(sender, e);
+            //
+            //listBox1.Items.Clear();
+            //sAyar.serverListele(listBox1);
+
+            //if (listBox1.Items.Count > 0)
+            //{
+            //    listBox1.SelectedIndex = 0;
+            //}
+            //
             listBox2.Items.Clear();
             yoneticiDuzenle.yoneticiListele(listBox2);
             listBox2.SelectedIndex = 0;
@@ -165,12 +178,16 @@ namespace Hotspot_Sİstemi_V0._1
         {
             groupBox3.Visible = true;
             groupBox4.Visible = false;
+            groupBox1.Visible = false;
+            groupBox2.Visible = false;
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             groupBox4.Visible = true;
             groupBox3.Visible = false;
+            groupBox1.Visible = false;
+            groupBox2.Visible = false;
             textBox10.Text = "";
             sifreDuzTxt.Text = "";
             emailDuzTxt.Text = "";
@@ -267,7 +284,7 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button10_Click(object sender, EventArgs e)
         {
-            if (textBox8.Text == "" || textBox7.Text == "" || telNoTxt.Text == "")
+            if (textBox8.Text == "" || textBox7.Text == "")
             {
                 MessageBox.Show("Gerekli (*) Alanları Doldurunuz");
             }
@@ -397,12 +414,12 @@ namespace Hotspot_Sİstemi_V0._1
             groupBox6.Visible = false;
             textBox5.ReadOnly = false;
             textBox5.Text = "";
-            textBox1.Text = "";
-            textBox1.ReadOnly = true;
-            textBox4.Text = "";
-            textBox4.ReadOnly = true;
-            textBox6.Text = "";
-            textBox6.ReadOnly = true;
+            textBox8.Text = "";
+            textBox8.ReadOnly = true;
+            //textBox8.Text = "";
+            //textBox8.ReadOnly = true;
+            //textBox7.Text = "";
+            //textBox7.ReadOnly = true;
             listBox3_SelectedIndexChanged(sender, e);
             saatTxt.Text = "";
             saatTxt.ReadOnly = false;
@@ -415,9 +432,10 @@ namespace Hotspot_Sİstemi_V0._1
             groupBox5.Visible = false;
             kulSifreTxt.Text = "";
             emailTxt.Text = "";
-            kAdiTxt.ReadOnly = false;
+            //kAdiTxt.ReadOnly = false;
+            textBox10.ReadOnly = false;
             svAdiTxt.ReadOnly = false;
-            kAdiTxt.Text = "";
+            textBox10.Text = "";
             svAdiTxt.Text = "";
             dateTimePicker1.Text = "";
             listBox4_SelectedIndexChanged(sender, e);
@@ -687,11 +705,57 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sayac++;
 
-            if (sayac % 60 == 0)
+            if (sayac % 20 == 0)
             {
                 GenelSayfa_Load(sender, e);
                 sayac = 0;
             }
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+            textBox2.Text = "";
+            textBox3.Text = "";
+            textBox4.Text = "";
+            groupBox1.Visible = true;
+            groupBox2.Visible = false;
+            groupBox3.Visible = false;
+            groupBox4.Visible = false;
+        }
+
+        private void button14_Click(object sender, EventArgs e)
+        {
+            tabPage3_Enter(sender, e);
+            groupBox1.Visible = false;
+            groupBox2.Visible = true;
+            groupBox3.Visible = false;
+            groupBox4.Visible = false;
+        }
+
+        private void listBox1_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+            listBox1_SelectedIndexChanged(sender, e);
+        }
+
+        private void guncelleBtn_Click_1(object sender, EventArgs e)
+        {
+            guncelleBtn_Click(sender, e);
+        }
+
+        private void silBtn_Click_1(object sender, EventArgs e)
+        {
+            silBtn_Click(sender, e);
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            button2_Click(sender, e);
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            button1_Click(sender, e);
         }
     }
 }
