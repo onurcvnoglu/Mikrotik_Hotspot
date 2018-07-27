@@ -21,7 +21,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             //yönetici her programı çalıştırdığında süresi dolan kullanıcıları silecek.. 
             string date = (string.Format("{0:dd/MM/yyyy HH:mm:ss}", DateTime.Now));
-            SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             SqlCommand komut = new SqlCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
@@ -61,7 +61,7 @@ namespace Hotspot_Sİstemi_V0._1
 
         public void serverVeri()  //Server Bİlgilerini Çektik.
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             SqlCommand komut = new SqlCommand();
             baglanti.Open();
             komut.Connection = baglanti;

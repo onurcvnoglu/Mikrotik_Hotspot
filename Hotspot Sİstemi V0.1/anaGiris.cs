@@ -33,7 +33,8 @@ namespace Hotspot_Sİstemi_V0._1
         private void button1_Click(object sender, EventArgs e)
         {
             //YÖNETİCİ GİRİŞİ
-            SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            //SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
             SqlCommand komut = new SqlCommand();
             if (baglanti.State == ConnectionState.Closed)
             {

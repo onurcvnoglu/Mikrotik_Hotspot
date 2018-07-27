@@ -16,7 +16,7 @@ namespace Hotspot_Sİstemi_V0._1
         string svSifre;
         string silKulAdi;
         
-        SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+        SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
 
         public void serverGuncelle(TextBox ipAdres, TextBox kullaniciAdi, TextBox sifre,TextBox serverAdi)
         {
@@ -28,7 +28,7 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                     SqlCommand cmd = new SqlCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
@@ -82,7 +82,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             try
             {
-                SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                 SqlCommand komut = new SqlCommand();
                 if (baglanti.State==ConnectionState.Closed)
                 {

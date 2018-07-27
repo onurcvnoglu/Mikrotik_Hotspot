@@ -8,17 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Threading;
+using System.Data.SQLite;
 
 namespace Hotspot_Sİstemi_V0._1
 {
     public partial class GenelSayfa : Form
     {
         int sayac = 0;
-        SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+        SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        SqlDataAdapter da;
+
+        DataTable dt;
         serverAyar sAyar = new serverAyar();
         yonetici yoneticiDuzenle = new yonetici();
         Kullanici kullanici = new Kullanici();
         serverAyar serverayar = new serverAyar();
+        KullaniciSil kullanSil = new KullaniciSil();
         string svID; //serverId si için
         string svIp; //serveripsi
         string svKulAdi; //server kullanıcı adı
@@ -37,69 +43,35 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
+            kullanSil.kullanici_Sil();
             timer1.Start();
-            SqlCommand cmd = new SqlCommand("KullaniciBilgileri", baglanti);
-            cmd.CommandType = CommandType.StoredProcedure;
-            SqlDataAdapter dr = new SqlDataAdapter(cmd);
-            DataSet ds = new DataSet();
-            dr.Fill(ds, "Fill");
-            dataGridView1.DataSource = ds.Tables[0];
+            //SqlCommand cmd = new SqlCommand("KullaniciBilgileri", baglanti);
+            //cmd.CommandType = CommandType.StoredProcedure;
+            SqlCommand cmd = new SqlCommand("Select * from HotspotTBL order by sure", baglanti);
+            da = new SqlDataAdapter(cmd);
+            //ds = new DataSet();
+            dt = new DataTable();
+            //dr.Fill(ds, "Fill");
+            da.Fill(dt);
+            //dataGridView1.DataSource = ds.Tables[0];
+            dataGridView1.DataSource = dt;
             //isimleri değiştirme
-            dataGridView1.Columns[0].HeaderCell.Value = "Server Adı";
-            dataGridView1.Columns[1].HeaderCell.Value = "Kullanıcı Adı";
-            dataGridView1.Columns[2].HeaderCell.Value = "Şifre";
-            dataGridView1.Columns[3].HeaderCell.Value = "E-Posta";
-            dataGridView1.Columns[4].HeaderCell.Value = "Telefon No";
-            dataGridView1.Columns[5].HeaderCell.Value = "Süre";
-            dataGridView1.Columns[5].Width = 130;
-            dataGridView1.Columns[0].Width = 120;
-            dataGridView1.Columns[1].Width = 120;
-            dataGridView1.CurrentCell = null;
-        }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //SERVER EKLEME
-            if (textBox1.Text == "" || textBox3.Text == "" || textBox4.Text == "" || textBox2.Text == "")
-            {
-                MessageBox.Show("Boş alan Bırakmayınız");
-            }
-            else
-            {
-                SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
-                try
-                {
-                    if (baglanti.State == ConnectionState.Closed)
-                        baglanti.Open();
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = baglanti;
-                    cmd.CommandText = "Select * from ServerTBL where serverAdi='" + textBox1.Text + "' or ipAdres='" + textBox3.Text + "'";
-                    cmd.ExecuteNonQuery();
-                    SqlDataReader dr = cmd.ExecuteReader();
-                    if (dr.Read())
-                    {
-                        MessageBox.Show("Bu alana ait Server bulunmaktadır.Farklı bir server giriniz");
-                    }
-                    else
-                    {
-                        dr.Close();
-                        string kayit = "insert into ServerTBL(serverAdi,ipAdres,kullaniciAdi,sifre) values (@serverAdi,@ipAdres,@kullaniciAdi,@sifre)";
-                        SqlCommand komut = new SqlCommand(kayit, baglanti);
-                        komut.Parameters.AddWithValue("@serverAdi", textBox1.Text);
-                        komut.Parameters.AddWithValue("@ipAdres", textBox3.Text);
-                        komut.Parameters.AddWithValue("@kullaniciAdi", textBox2.Text);
-                        komut.Parameters.AddWithValue("@sifre", textBox4.Text);
-                        komut.ExecuteNonQuery();
-                        baglanti.Close();
-                        MessageBox.Show("Server Kayıt İşlemi Gerçekleşti.");
-                    }
-                    baglanti.Close();
-                }
-                catch (Exception hata)
-                {
-                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
-                }
-            }
+            dataGridView1.Columns[0].HeaderCell.Value = "Server ID";
+            //dataGridView1.Columns[1].HeaderCell.Value = "Kullanıcı Adı";
+            dataGridView1.Columns[2].HeaderCell.Value = "Kullanıcı Adı";
+            dataGridView1.Columns[3].HeaderCell.Value = "Şifre";
+            //dataGridView1.Columns[4].HeaderCell.Value = "Telefon No";
+            dataGridView1.Columns[5].HeaderCell.Value = "Süre";
+            //dataGridView1.Columns[5].Width = 130;
+            //dataGridView1.Columns[0].Width = 120;
+            //dataGridView1.Columns[1].Width = 120;
+            dataGridView1.CurrentCell = null;
+            dataGridView1.Columns[2].ReadOnly = true;
+            dataGridView1.Columns[0].Visible = false;
+            dataGridView1.Columns[1].Visible = false;
+            dataGridView1.Columns[4].Visible = false;
+            dataGridView1.Columns[6].Visible = false;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -221,6 +193,8 @@ namespace Hotspot_Sİstemi_V0._1
             //listBox1.Items.Clear();
             listBox4.Items.Clear();
             listBox3.Items.Clear();
+            listBox6.Items.Clear();
+            serverayar.serverListele(listBox6);
             serverayar.serverListele(listBox4);
             serverayar.serverListele(listBox3);
             if (listBox5.Items.Count > 0)
@@ -235,6 +209,10 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 listBox3.SelectedIndex = 0;
             }
+            if (listBox6.Items.Count > 0)
+            {
+                listBox6.SelectedIndex = 0;
+            }
 
             //listBox3_SelectedIndexChanged(sender, e);
         }
@@ -246,7 +224,7 @@ namespace Hotspot_Sİstemi_V0._1
                 textBox5.Text = listBox3.SelectedItem.ToString();
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                     SqlCommand komut = new SqlCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
@@ -281,7 +259,9 @@ namespace Hotspot_Sİstemi_V0._1
                 }
             }
         }
-
+        //
+        TimeSpan saatEkle;
+        //
         private void button10_Click(object sender, EventArgs e)
         {
             if (textBox8.Text == "" || textBox7.Text == "")
@@ -292,7 +272,7 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                     SqlCommand cmd = new SqlCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
@@ -332,12 +312,15 @@ namespace Hotspot_Sİstemi_V0._1
 
                             if (saatTxt.Text == "")
                             {
-                                saatTxt.Text = "0";
+                                saatEkle = TimeSpan.FromDays(365);
+                            }
+                            else
+                            {
+                                saatEkle = TimeSpan.FromHours(Convert.ToInt32(saatTxt.Text));
                             }
                             //gün ve saat ekleme
                             //
                             //TimeSpan gunEkle = TimeSpan.FromDays(dateTimePicker2.Value.Day/*Convert.ToInt32(textBox7.Text)*/);
-                            TimeSpan saatEkle = TimeSpan.FromHours(Convert.ToInt32(saatTxt.Text));
                             //TimeSpan zamanEkle = gunEkle.Add(saatEkle);
                             string date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", dateTimePicker2.Value.Add(saatEkle)/*DateTime.Now.Add(zamanEkle)*/);//zamanı gün olarak arttırdık
                             if (baglanti.State == ConnectionState.Closed)
@@ -375,7 +358,7 @@ namespace Hotspot_Sİstemi_V0._1
                 textBox10.Text = listBox5.SelectedItem.ToString();
                 svAdiTxt.Text = listBox4.SelectedItem.ToString();
                 //Kullanıcı bulma işlemi
-                SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                 SqlCommand komut = new SqlCommand();
                 if (baglanti.State == ConnectionState.Closed)
                 {
@@ -458,7 +441,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             try
             {
-                SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                 SqlCommand komut = new SqlCommand();
                 if (baglanti.State == ConnectionState.Closed)
                 {
@@ -493,7 +476,7 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void serverVeriCek()  //Server Bilgilerini Çektik.
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             SqlCommand komut = new SqlCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
@@ -517,7 +500,7 @@ namespace Hotspot_Sİstemi_V0._1
         private void button12_Click(object sender, EventArgs e)
         {
             //KULLANICI GÜNCELLEME
-            if (kulSifreTxt.Text == "" || telnoDuzenTxt.Text == "")
+            if (kulSifreTxt.Text == "")
             {
                 MessageBox.Show("Boş alan bırakmayınız");
             }
@@ -539,7 +522,7 @@ namespace Hotspot_Sİstemi_V0._1
                     string sure = dateTimePicker1.Text;
                     string date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", dateTimePicker3.Value.Add(saatEkle)/*Convert.ToDateTime(sure).Add(zamanEkle)*/);//zamanı gün olarak güncelle
                     //date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", sure.AddHours(Convert.ToInt32(guncelSaatTxt.Text)));//zamanı saat olarak güncelle
-                    SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
                     SqlCommand cmd = new SqlCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
@@ -548,7 +531,7 @@ namespace Hotspot_Sİstemi_V0._1
                     cmd.Connection = baglanti;
                     cmd.CommandText = "update HotspotTBL set sifre=@sifre, email=@email, sure=@sure, telNo=@telNo where serverId='" + svIdGuncel + "' and kullaniciAdi='" + textBox10.Text + "' ";
                     cmd.Parameters.AddWithValue("@sifre", kulSifreTxt.Text);
-                    cmd.Parameters.AddWithValue("@email", emailTxt.Text);
+                    cmd.Parameters.AddWithValue("@email", textBox9.Text);
                     cmd.Parameters.AddWithValue("@sure", date);
                     cmd.Parameters.AddWithValue("@telNo", telnoDuzenTxt.Text);
                     cmd.ExecuteNonQuery();
@@ -584,7 +567,6 @@ namespace Hotspot_Sİstemi_V0._1
                         mikrotik.Send("=password=" + kulSifreTxt.Text + "");
                         mikrotik.Send("=profile=default", true);
                     }
-
                 }
                 catch (Exception hata)
                 {
@@ -615,7 +597,6 @@ namespace Hotspot_Sİstemi_V0._1
         {
             yonetici yoneticiS = new yonetici();
             yoneticiS.yoneticiSil(kAdiTxt.Text);
-            //groupBox2.Visible = false;
             tabPage4_Enter(sender, e);
         }
 
@@ -633,7 +614,7 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void ServerVeri()
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
+            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
             SqlCommand komut = new SqlCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
@@ -685,27 +666,29 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void dataGridView1_Click(object sender, EventArgs e)
         {
-            if (dataGridView1.CurrentCell!=null)
-            {
-                tabControl1.SelectedTab = tabPage5;
-                button8_Click(sender, e);
-                string serverAdiAl = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-                string kulAdiAl = dataGridView1.CurrentRow.Cells[1].Value.ToString();
-                listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
-                listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
-            }
+            //if (dataGridView1.CurrentCell!=null)
+            //{
+            //    tabControl1.SelectedTab = tabPage5;
+            //    button8_Click(sender, e);
+            //    string serverAdiAl = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+            //    string kulAdiAl = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            //    listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
+            //    listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
+            //}
+            
         }
 
         private void tabPage1_Enter(object sender, EventArgs e)
         {
             GenelSayfa_Load(sender,e);
+            tabPage5_Enter(sender, e);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             sayac++;
 
-            if (sayac % 20 == 0)
+            if (sayac % 300 == 0)
             {
                 GenelSayfa_Load(sender, e);
                 sayac = 0;
@@ -755,7 +738,176 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            button1_Click(sender, e);
+            //SERVER EKLEME
+            if (textBox1.Text == "" || textBox3.Text == "" || textBox4.Text == "" || textBox2.Text == "")
+            {
+                MessageBox.Show("Boş alan Bırakmayınız");
+            }
+            else
+            {
+                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                try
+                {
+                    if (baglanti.State == ConnectionState.Closed)
+                        baglanti.Open();
+                    SqlCommand cmd = new SqlCommand();
+                    cmd.Connection = baglanti;
+                    cmd.CommandText = "Select * from ServerTBL where serverAdi='" + textBox1.Text + "' or ipAdres='" + textBox3.Text + "'";
+                    cmd.ExecuteNonQuery();
+                    SqlDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        MessageBox.Show("Bu alana ait Server bulunmaktadır.Farklı bir server giriniz");
+                    }
+                    else
+                    {
+                        dr.Close();
+                        string kayit = "insert into ServerTBL(serverAdi,ipAdres,kullaniciAdi,sifre) values (@serverAdi,@ipAdres,@kullaniciAdi,@sifre)";
+                        SqlCommand komut = new SqlCommand(kayit, baglanti);
+                        komut.Parameters.AddWithValue("@serverAdi", textBox1.Text);
+                        komut.Parameters.AddWithValue("@ipAdres", textBox3.Text);
+                        komut.Parameters.AddWithValue("@kullaniciAdi", textBox2.Text);
+                        komut.Parameters.AddWithValue("@sifre", textBox4.Text);
+                        komut.ExecuteNonQuery();
+                        baglanti.Close();
+                        MessageBox.Show("Server Kayıt İşlemi Gerçekleşti.");
+                    }
+                    baglanti.Close();
+                }
+                catch (Exception hata)
+                {
+                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                }
+            }
+        }
+
+        private void button15_Click(object sender, EventArgs e)
+        {
+            if (dataGridView1.CurrentCell!=null)
+            {
+                svIdGuncel = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+
+                try
+                {
+                    SqlCommandBuilder cmdBldr = new SqlCommandBuilder(da); //güncelleme
+                    cmdBldr.GetUpdateCommand();
+                    da.Update(dt);
+
+                    serverVeriCek();
+                    MK mikrotik = new MK(svIp);
+                    if (!mikrotik.Login(svKulAdi, svSifre))
+                    {
+                        MessageBox.Show("Bağlantı işlemi başarısız");
+                        mikrotik.Close();
+                        return;
+                    }
+                    else
+                    {
+                        mikrotik.Send("/ip/hotspot/user/remove");
+                        mikrotik.Send("=.id=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "", true);
+                    }
+                    if (!mikrotik.Login(svKulAdi, svSifre))
+                    {
+                        MessageBox.Show("Bağlantı işlemi başarısız");
+                        mikrotik.Close();
+                        return;
+                    }
+                    else
+                    {
+                        mikrotik.Send("/ip/hotspot/user/add");
+                        mikrotik.Send("=name=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "");
+                        mikrotik.Send("=password=" + dataGridView1.CurrentRow.Cells[3].Value.ToString() + "");
+                        mikrotik.Send("=profile=default", true);
+                    }
+                    MessageBox.Show("Kullanıcı Güncellendi");
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Gerekli alanları doğru şekilde giriniz");
+                }
+                GenelSayfa_Load(sender, e);
+            }
+        }
+
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
+            //if (dataGridView1.CurrentCell != null)
+            //{
+            //    tabControl1.SelectedTab = tabPage5;
+            //    button8_Click(sender, e);
+            //    string serverAdiAl = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+            //    string kulAdiAl = dataGridView1.CurrentRow.Cells[1].Value.ToString();
+            //    listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
+            //    listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
+            //}
+        }
+
+        private void button16_Click(object sender, EventArgs e)
+        {
+            GenelSayfa_Load(sender, e);
+        }
+
+        private void listBox6_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox6.SelectedItem != null)
+            {
+                textBox5.Text = listBox6.SelectedItem.ToString();
+                try
+                {
+                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                    SqlCommand komut = new SqlCommand();
+                    if (baglanti.State == ConnectionState.Closed)
+                    {
+                        baglanti.Open();
+                    }
+                    komut.Connection = baglanti;
+                    komut.CommandText = "select * from ServerTBL where serverAdi='" + textBox5.Text + "'";
+                    komut.ExecuteNonQuery();
+                    SqlDataReader dr = komut.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        svID = dr["serverId"].ToString();
+                        svIp = dr["ipAdres"].ToString();
+                        svKulAdi = dr["kullaniciAdi"].ToString();
+                        svSifre = dr["sifre"].ToString();
+                        textBox5.ReadOnly = true;
+                        button10.Enabled = true;
+                        textBox8.ReadOnly = false;
+                        textBox7.ReadOnly = false;
+                        textBox6.ReadOnly = false;
+                        //textBox7.ReadOnly = false;
+                        saatTxt.ReadOnly = false;
+                    }
+                    else
+                    {
+
+                    }
+                }
+                catch (Exception hata)
+                {
+                    MessageBox.Show("Bir hata oluştu" + hata.Message);
+                }
+            }
+        }
+
+        private void button17_Click(object sender, EventArgs e)
+        {
+            textBox8.Text = textBox12.Text;
+            textBox7.Text = textBox11.Text;
+            saatTxt.Text = textBox13.Text;
+            dateTimePicker4.Text = dateTimePicker2.Text;
+            button10_Click(sender, e);
+            GenelSayfa_Load(sender, e);
+        }
+
+        private void button18_Click(object sender, EventArgs e)
+        {
+            string serverAdiAl = listBox6.SelectedItem.ToString();
+            string kulAdiAl = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+            listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
+            listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
+            button11_Click(sender, e);
+            GenelSayfa_Load(sender, e);
         }
     }
 }
