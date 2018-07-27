@@ -902,12 +902,19 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button18_Click(object sender, EventArgs e)
         {
-            string serverAdiAl = listBox6.SelectedItem.ToString();
-            string kulAdiAl = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-            listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
-            listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
-            button11_Click(sender, e);
-            GenelSayfa_Load(sender, e);
+            if (dataGridView1.CurrentRow!=null)
+            {
+                string serverAdiAl = listBox6.SelectedItem.ToString();
+                string kulAdiAl = dataGridView1.CurrentRow.Cells[2].Value.ToString();
+                listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
+                listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
+                button11_Click(sender, e);
+                GenelSayfa_Load(sender, e);
+            }
+            else
+            {
+                MessageBox.Show("Silmek istediğiniz kullanıcıyı seçiniz");
+            }
         }
     }
 }
