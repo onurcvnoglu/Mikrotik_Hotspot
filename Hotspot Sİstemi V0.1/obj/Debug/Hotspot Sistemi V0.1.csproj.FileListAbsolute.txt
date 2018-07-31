@@ -65,18 +65,8 @@ C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.pdb
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.dll
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SQLite.dll
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SQLite.EF6.dll
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SQLite.Linq.dll
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\tik4net.dll
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\tik4net.objects.dll
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.xml
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SQLite.xml
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SQLite.dll.config
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\tik4net.xml
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\tik4net.objects.xml
-C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sistemi V0.1.csprojAssemblyReference.cache
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.anaGiris.resources
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.GenelSayfa.resources
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.Properties.Resources.resources
@@ -94,3 +84,34 @@ C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.application
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.exe.manifest
 C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.application
+C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SqlServerCe.dll
+C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServerCompact.dll
+C:\Users\onur\Desktop\hotspot1\27temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServerCompact.xml
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.exe.config
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.exe.manifest
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.application
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.exe
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\Hotspot Sİstemi V0.1.pdb
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.dll
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServerCompact.dll
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\System.Data.SqlServerCe.dll
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.xml
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\bin\Debug\EntityFramework.SqlServerCompact.xml
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sistemi V0.1.csprojAssemblyReference.cache
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.anaGiris.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.GenelSayfa.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.Properties.Resources.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.serverDuzen.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.yoneticiAyar.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.serverBilgi.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.serverEkle.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot_Sİstemi_V0._1.yoneticiKayit.resources
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sistemi V0.1.csproj.GenerateResource.cache
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sistemi V0.1.csproj.CoreCompileInputs.cache
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.exe.manifest
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.application
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sistemi V0.1.csproj.CopyComplete
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.exe
+C:\Users\onur\Desktop\hotspot1\30 temmuz\Hotspot Sİstemi V0.2\Hotspot Sİstemi V0.1\obj\Debug\Hotspot Sİstemi V0.1.pdb

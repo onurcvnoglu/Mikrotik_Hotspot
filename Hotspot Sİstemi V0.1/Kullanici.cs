@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlServerCe;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,11 @@ namespace Hotspot_Sİstemi_V0._1
 {
     class Kullanici
     {
-        SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
 
         public void kullaniciListele(ListBox listbox)
         {
-            SqlCommand komut = new SqlCommand();
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -23,7 +24,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from HotspotTBL";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             while (dr.Read())
             {
                 listbox.Items.Add(dr["kullaniciAdi"].ToString());
@@ -32,8 +33,8 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void kullaniciBul(TextBox kAdiTxt,TextBox svAdiTxt,Button button6,Button silBtn,string svIdGuncel,TextBox kulSifreTxt,TextBox emailTxt,DateTimePicker dateTimePicker1)
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            SqlCommand komut = new SqlCommand();
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -41,7 +42,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from HotspotTBL H , ServerTBL S where S.serverId=H.serverId and H.kullaniciAdi='" + kAdiTxt.Text + "' and S.serverAdi='" + svAdiTxt.Text + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             if (dr.Read())
             {
                 svIdGuncel = dr["serverId"].ToString();

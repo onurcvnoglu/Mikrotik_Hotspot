@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlServerCe;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace Hotspot_Sİstemi_V0._1
     class yonetici
     {
 
-        SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
 
         public void yoneticiEkle(string kullAdi, string sifre, string email, string seviye)
         {
@@ -27,11 +28,11 @@ namespace Hotspot_Sİstemi_V0._1
                 {
                     if (baglanti.State == ConnectionState.Closed)
                         baglanti.Open();
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCeCommand cmd = new SqlCeCommand();
                     cmd.Connection = baglanti;
                     cmd.CommandText = "Select * from YoneticiTBL where kullaniciAdi='" + kullAdi + "' or email='" + email + "'";
                     cmd.ExecuteNonQuery();
-                    SqlDataReader dr = cmd.ExecuteReader();
+                    SqlCeDataReader dr = cmd.ExecuteReader();
                     if (dr.Read())
                     {
                         MessageBox.Show("Bu kullanıcı adı bulunmaktadır.Farklı bir ad giriniz");
@@ -40,7 +41,7 @@ namespace Hotspot_Sİstemi_V0._1
                     {
                         dr.Close();
                         string kayit = "insert into YoneticiTBL(kullaniciAdi,sifre,email,seviye) values (@kullaniciAdi,@sifre,@email,@seviye)";
-                        SqlCommand komut = new SqlCommand(kayit, baglanti);
+                        SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
                         komut.Parameters.AddWithValue("@kullaniciAdi", kullAdi);
                         komut.Parameters.AddWithValue("@sifre", sifre);
                         komut.Parameters.AddWithValue("@email", email);
@@ -60,7 +61,7 @@ namespace Hotspot_Sİstemi_V0._1
 
         public void yoneticiBul(TextBox kullAdi,TextBox sifre,TextBox email,TextBox seviye,Button guncelle,Button sil)
         {
-            SqlCommand komut = new SqlCommand();
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -68,7 +69,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from YoneticiTBL where kullaniciAdi='"+kullAdi.Text+"'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             if (dr.Read())
             {
                 sifre.Text = dr["sifre"].ToString();
@@ -95,14 +96,14 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand komut = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand komut = new SqlCeCommand();
                     if (baglanti.State==ConnectionState.Closed)
                     {
                         baglanti.Open();
                     }
                     komut.Connection = baglanti;
-                    komut.CommandText = "delete from YoneticiTBL where kullaniciAdi='" + kullAdiSil + "' DBCC CHECKIDENT('YoneticiTBL', RESEED, 0)";
+                    komut.CommandText = "delete from YoneticiTBL where kullaniciAdi='" + kullAdiSil + "'";
                     komut.ExecuteNonQuery();
                     MessageBox.Show("Kullanıcı Silindi");
                 }
@@ -122,8 +123,8 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand cmd = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
                         baglanti.Open();
@@ -145,7 +146,7 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void yoneticiListele(ListBox listbox)
         {
-            SqlCommand komut = new SqlCommand();
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -153,7 +154,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from YoneticiTBL";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             while (dr.Read())
             {
                 listbox.Items.Add(dr["kullaniciAdi"].ToString());

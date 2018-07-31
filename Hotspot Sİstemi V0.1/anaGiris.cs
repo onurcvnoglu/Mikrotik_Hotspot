@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
-
+using System.Data.SqlServerCe;
 
 
 namespace Hotspot_Sİstemi_V0._1
@@ -23,9 +23,6 @@ namespace Hotspot_Sİstemi_V0._1
 		}
         private void Form1_Load(object sender, EventArgs e)
         {
-            //MikroCek mc=new MikroCek();
-            //mc.VeriAl(label1);
-
             timer1.Stop();
             textBox1.Text = Properties.Settings.Default["kuladi"].ToString();
             textBox2.Text = Properties.Settings.Default["sifre"].ToString();
@@ -33,9 +30,8 @@ namespace Hotspot_Sİstemi_V0._1
         private void button1_Click(object sender, EventArgs e)
         {
             //YÖNETİCİ GİRİŞİ
-            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            //SqlConnection baglanti = new SqlConnection("Data Source=.\\SQLEXPRESS; Initial Catalog = Hotspot; Integrated Security = True");
-            SqlCommand komut = new SqlCommand();
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -43,7 +39,8 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from YoneticiTBL where kullaniciAdi='"+textBox1.Text+"' and sifre='"+textBox2.Text+"'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            //SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr=komut.ExecuteReader();
             
             if (dr.Read())
             {
@@ -56,11 +53,13 @@ namespace Hotspot_Sİstemi_V0._1
                 {
                     Properties.Settings.Default["kuladi"] = textBox1.Text;
                     Properties.Settings.Default["sifre"] = textBox2.Text;
+                    Properties.Settings.Default.Save();
                 }
                 else
                 {
                     Properties.Settings.Default["kuladi"] = "";
                     Properties.Settings.Default["sifre"] = "";
+                    Properties.Settings.Default.Reset();
                 }
             }
             else

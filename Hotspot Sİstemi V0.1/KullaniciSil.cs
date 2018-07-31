@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlServerCe;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,9 +21,9 @@ namespace Hotspot_Sİstemi_V0._1
         public void kullanici_Sil()
         {
             //yönetici her programı çalıştırdığında süresi dolan kullanıcıları silecek.. 
-            string date = (string.Format("{0:dd/MM/yyyy HH:mm:ss}", DateTime.Now));
-            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            SqlCommand komut = new SqlCommand();
+            string date = (string.Format("{0:yyyy/MM/dd HH:mm:ss}", DateTime.Now));
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -30,7 +31,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from HotspotTBL where sure < '" + date + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             while (dr.Read())
             {
                 svId = dr["serverId"].ToString();
@@ -61,13 +62,13 @@ namespace Hotspot_Sİstemi_V0._1
 
         public void serverVeri()  //Server Bİlgilerini Çektik.
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            SqlCommand komut = new SqlCommand();
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
             baglanti.Open();
             komut.Connection = baglanti;
             komut.CommandText = "select * from ServerTBL where serverId='" + svId + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
 
             if (dr.Read())
             {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlServerCe;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace Hotspot_Sİstemi_V0._1
         string svSifre;
         string silKulAdi;
         
-        SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+        SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
 
         public void serverGuncelle(TextBox ipAdres, TextBox kullaniciAdi, TextBox sifre,TextBox serverAdi)
         {
@@ -28,8 +29,8 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand cmd = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
                         baglanti.Open();
@@ -52,7 +53,7 @@ namespace Hotspot_Sİstemi_V0._1
         public void serverBul(TextBox serverAdi, TextBox ipAdres, TextBox kullaniciAdi, TextBox sifre, Button guncelle, Button sil)
         {
 
-            SqlCommand komut = new SqlCommand();
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
                 {
                     baglanti.Open();
@@ -60,7 +61,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from ServerTBL where serverAdi='" + serverAdi.Text + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             if (dr.Read())
             {
                 sifre.Text = dr["sifre"].ToString();
@@ -82,14 +83,14 @@ namespace Hotspot_Sİstemi_V0._1
         {
             try
             {
-                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                SqlCommand komut = new SqlCommand();
+                SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                SqlCeCommand komut = new SqlCeCommand();
                 if (baglanti.State==ConnectionState.Closed)
                 {
                     baglanti.Open();
                 }
                 komut.Connection = baglanti;
-                komut.CommandText = "delete from ServerTBL where serverAdi='" + serverAdiSil.Text + "' DBCC CHECKIDENT('ServerTBL', RESEED, 0)";
+                komut.CommandText = "delete from ServerTBL where serverAdi='" + serverAdiSil.Text + "'";
                 komut.ExecuteNonQuery();
                 MessageBox.Show("Server Silindi");
             }
@@ -100,7 +101,7 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void serverListele(ListBox listbox)
         {
-            SqlCommand cmd = new SqlCommand();
+            SqlCeCommand cmd = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -108,7 +109,7 @@ namespace Hotspot_Sİstemi_V0._1
             cmd.Connection = baglanti;
             cmd.CommandText = "select * from ServerTBL ORDER BY serverId";
             cmd.ExecuteNonQuery();
-            SqlDataReader dr = cmd.ExecuteReader();
+            SqlCeDataReader dr = cmd.ExecuteReader();
             while (dr.Read())
             {
                 listbox.Items.Add(dr["serverAdi"].ToString());
@@ -118,7 +119,7 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void kullaniciServerListe(ListBox listbox2,ListBox listbox1)
         {
-            SqlCommand komut = new SqlCommand();
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -126,7 +127,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from HotspotTBL H , ServerTBL S where S.serverId=H.serverId and S.serverAdi='" + listbox2.SelectedItem.ToString() + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             while (dr.Read())
             {
                 listbox1.Items.Add(dr["kullaniciAdi"].ToString());
@@ -139,7 +140,7 @@ namespace Hotspot_Sİstemi_V0._1
             //mikrotik için server bilgileri çektik 
             try
             {
-                SqlCommand komut = new SqlCommand();
+                SqlCeCommand komut = new SqlCeCommand();
                 if (baglanti.State == ConnectionState.Closed)
                 {
                     baglanti.Open();
@@ -147,7 +148,7 @@ namespace Hotspot_Sİstemi_V0._1
                 komut.Connection = baglanti;
                 komut.CommandText = "select * from ServerTBL where serverAdi='" + serverAdi.Text + "'";
                 komut.ExecuteNonQuery();
-                SqlDataReader dr = komut.ExecuteReader();
+                SqlCeDataReader dr = komut.ExecuteReader();
                 if (dr.Read())
                 {
                     svIp = dr["ipAdres"].ToString();
@@ -169,7 +170,7 @@ namespace Hotspot_Sİstemi_V0._1
 
             try
             {
-                SqlCommand komut = new SqlCommand();
+                SqlCeCommand komut = new SqlCeCommand();
                 MK mikrotik = new MK(svIp);
 
                 if (!mikrotik.Login(svKulAdi, svSifre))
@@ -185,7 +186,7 @@ namespace Hotspot_Sİstemi_V0._1
                     komut.Connection = baglanti;
                     komut.CommandText = "select H.kullaniciAdi from HotspotTBL H, ServerTBL S where S.serverId=H.serverId and S.serverAdi='" + routerSilServerAdi.Text + "'";
                     komut.ExecuteNonQuery();
-                    SqlDataReader dr = komut.ExecuteReader();
+                    SqlCeDataReader dr = komut.ExecuteReader();
                     while (dr.Read())
                     {
                         silKulAdi = dr["kullaniciAdi"].ToString();

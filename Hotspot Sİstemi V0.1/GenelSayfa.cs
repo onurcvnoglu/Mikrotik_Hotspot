@@ -9,16 +9,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
-using System.Data.SQLite;
+using System.Data.SqlServerCe;
 
 namespace Hotspot_Sİstemi_V0._1
 {
     public partial class GenelSayfa : Form
     {
         int sayac = 0;
-        SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-        SqlDataAdapter da;
-
+        SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+        SqlCeDataAdapter da;
+        
         DataTable dt;
         serverAyar sAyar = new serverAyar();
         yonetici yoneticiDuzenle = new yonetici();
@@ -43,12 +43,12 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
+            dateTimePicker4.Value = DateTime.Now;
+            dateTimePicker2.Value = DateTime.Now;
             kullanSil.kullanici_Sil();
             timer1.Start();
-            //SqlCommand cmd = new SqlCommand("KullaniciBilgileri", baglanti);
-            //cmd.CommandType = CommandType.StoredProcedure;
-            SqlCommand cmd = new SqlCommand("Select * from HotspotTBL order by sure", baglanti);
-            da = new SqlDataAdapter(cmd);
+            SqlCeCommand cmd = new SqlCeCommand("Select * from HotspotTBL order by sure", baglanti);
+            da = new SqlCeDataAdapter(cmd);
             //ds = new DataSet();
             dt = new DataTable();
             //dr.Fill(ds, "Fill");
@@ -58,14 +58,9 @@ namespace Hotspot_Sİstemi_V0._1
             //isimleri değiştirme
 
             dataGridView1.Columns[0].HeaderCell.Value = "Server ID";
-            //dataGridView1.Columns[1].HeaderCell.Value = "Kullanıcı Adı";
             dataGridView1.Columns[2].HeaderCell.Value = "Kullanıcı Adı";
             dataGridView1.Columns[3].HeaderCell.Value = "Şifre";
-            //dataGridView1.Columns[4].HeaderCell.Value = "Telefon No";
             dataGridView1.Columns[5].HeaderCell.Value = "Süre";
-            //dataGridView1.Columns[5].Width = 130;
-            //dataGridView1.Columns[0].Width = 120;
-            //dataGridView1.Columns[1].Width = 120;
             dataGridView1.CurrentCell = null;
             dataGridView1.Columns[2].ReadOnly = true;
             dataGridView1.Columns[0].Visible = false;
@@ -185,8 +180,12 @@ namespace Hotspot_Sİstemi_V0._1
         private void tabPage5_Enter(object sender, EventArgs e)
         {
             dateTimePicker1.Format = DateTimePickerFormat.Custom;
-            dateTimePicker1.CustomFormat = "dd/MM/yyyy HH:mm:ss";
-
+            dateTimePicker1.CustomFormat = "yyyy/MM/dd HH:mm:ss";
+            //Girince sıfırla
+            textBox8.Text = "";
+            textBox7.Text = "";
+            saatTxt.Text = "";
+            //
             button10.Enabled = false;
             button11.Enabled = false;
             button12.Enabled = false;
@@ -224,8 +223,8 @@ namespace Hotspot_Sİstemi_V0._1
                 textBox5.Text = listBox3.SelectedItem.ToString();
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand komut = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand komut = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
                         baglanti.Open();
@@ -233,7 +232,7 @@ namespace Hotspot_Sİstemi_V0._1
                     komut.Connection = baglanti;
                     komut.CommandText = "select * from ServerTBL where serverAdi='" + textBox5.Text + "'";
                     komut.ExecuteNonQuery();
-                    SqlDataReader dr = komut.ExecuteReader();
+                    SqlCeDataReader dr = komut.ExecuteReader();
                     if (dr.Read())
                     {
                         svID = dr["serverId"].ToString();
@@ -272,8 +271,8 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand cmd = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
                         baglanti.Open();
@@ -281,7 +280,7 @@ namespace Hotspot_Sİstemi_V0._1
                     cmd.Connection = baglanti;
                     cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and (H.kullaniciAdi='" + textBox8.Text + "' and H.email='" + textBox6.Text + "') or H.kullaniciAdi='" + textBox8.Text + "'";
                     cmd.ExecuteNonQuery();
-                    SqlDataReader dr = cmd.ExecuteReader();
+                    SqlCeDataReader dr = cmd.ExecuteReader();
                     if (dr.Read())
                     {
                         MessageBox.Show("Bu kullanıcı adına ait bir kullanıcı bulunmaktadır.");
@@ -318,15 +317,13 @@ namespace Hotspot_Sİstemi_V0._1
                             {
                                 saatEkle = TimeSpan.FromHours(Convert.ToInt32(saatTxt.Text));
                             }
+
                             //gün ve saat ekleme
-                            //
-                            //TimeSpan gunEkle = TimeSpan.FromDays(dateTimePicker2.Value.Day/*Convert.ToInt32(textBox7.Text)*/);
-                            //TimeSpan zamanEkle = gunEkle.Add(saatEkle);
-                            string date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", dateTimePicker2.Value.Add(saatEkle)/*DateTime.Now.Add(zamanEkle)*/);//zamanı gün olarak arttırdık
+                            string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker2.Value.Add(saatEkle));//zamanı gün olarak arttırdık
                             if (baglanti.State == ConnectionState.Closed)
                                 baglanti.Open();
                             string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
-                            SqlCommand komut = new SqlCommand(kayit, baglanti);
+                            SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
                             komut.Parameters.AddWithValue("@serverId", svID);
                             komut.Parameters.AddWithValue("@kullaniciAdi", textBox8.Text);
                             komut.Parameters.AddWithValue("@sifre", textBox7.Text);
@@ -337,11 +334,7 @@ namespace Hotspot_Sİstemi_V0._1
                             MessageBox.Show("Kullanıcı Kayıt İşlemi Gerçekleşti.");
                             baglanti.Close();
                         }
-                        ////
                     }
-
-                    /////////
-
                 }
                 catch (Exception hata)
                 {
@@ -358,8 +351,8 @@ namespace Hotspot_Sİstemi_V0._1
                 textBox10.Text = listBox5.SelectedItem.ToString();
                 svAdiTxt.Text = listBox4.SelectedItem.ToString();
                 //Kullanıcı bulma işlemi
-                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                SqlCommand komut = new SqlCommand();
+                SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                SqlCeCommand komut = new SqlCeCommand();
                 if (baglanti.State == ConnectionState.Closed)
                 {
                     baglanti.Open();
@@ -367,7 +360,7 @@ namespace Hotspot_Sİstemi_V0._1
                 komut.Connection = baglanti;
                 komut.CommandText = "select * from HotspotTBL H , ServerTBL S where S.serverId=H.serverId and H.kullaniciAdi='" + textBox10.Text + "' and S.serverAdi='" + svAdiTxt.Text + "'";
                 komut.ExecuteNonQuery();
-                SqlDataReader dr = komut.ExecuteReader();
+                SqlCeDataReader dr = komut.ExecuteReader();
                 if (dr.Read())
                 {
                     svIdGuncel = dr["serverId"].ToString();
@@ -441,8 +434,8 @@ namespace Hotspot_Sİstemi_V0._1
         {
             try
             {
-                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                SqlCommand komut = new SqlCommand();
+                SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                SqlCeCommand komut = new SqlCeCommand();
                 if (baglanti.State == ConnectionState.Closed)
                 {
                     baglanti.Open();
@@ -476,8 +469,8 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void serverVeriCek()  //Server Bilgilerini Çektik.
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            SqlCommand komut = new SqlCommand();
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -485,7 +478,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from ServerTBL where serverId='" + svIdGuncel + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
 
             if (dr.Read())
             {
@@ -520,10 +513,10 @@ namespace Hotspot_Sİstemi_V0._1
                     TimeSpan saatEkle = TimeSpan.FromHours(Convert.ToInt32(guncelSaatTxt.Text));
                     //TimeSpan zamanEkle = gunEkle.Add(saatEkle);
                     string sure = dateTimePicker1.Text;
-                    string date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", dateTimePicker3.Value.Add(saatEkle)/*Convert.ToDateTime(sure).Add(zamanEkle)*/);//zamanı gün olarak güncelle
+                    string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker3.Value.Add(saatEkle)/*Convert.ToDateTime(sure).Add(zamanEkle)*/);//zamanı gün olarak güncelle
                     //date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", sure.AddHours(Convert.ToInt32(guncelSaatTxt.Text)));//zamanı saat olarak güncelle
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand cmd = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
                         baglanti.Open();
@@ -614,8 +607,8 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void ServerVeri()
         {
-            SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-            SqlCommand komut = new SqlCommand();
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
             if (baglanti.State == ConnectionState.Closed)
             {
                 baglanti.Open();
@@ -623,7 +616,7 @@ namespace Hotspot_Sİstemi_V0._1
             komut.Connection = baglanti;
             komut.CommandText = "select * from ServerTBL S , HotspotTBL H where S.serverId=H.serverId and H.kullaniciAdi='" + kAdiTxt.Text + "' and S.serverAdi='" + svAdiTxt.Text + "'";
             komut.ExecuteNonQuery();
-            SqlDataReader dr = komut.ExecuteReader();
+            SqlCeDataReader dr = komut.ExecuteReader();
             if (dr.Read())
             {
                 kulSifreTxt.Text = dr["sifre"].ToString();
@@ -745,16 +738,16 @@ namespace Hotspot_Sİstemi_V0._1
             }
             else
             {
-                SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
                 try
                 {
                     if (baglanti.State == ConnectionState.Closed)
                         baglanti.Open();
-                    SqlCommand cmd = new SqlCommand();
+                    SqlCeCommand cmd = new SqlCeCommand();
                     cmd.Connection = baglanti;
                     cmd.CommandText = "Select * from ServerTBL where serverAdi='" + textBox1.Text + "' or ipAdres='" + textBox3.Text + "'";
                     cmd.ExecuteNonQuery();
-                    SqlDataReader dr = cmd.ExecuteReader();
+                    SqlCeDataReader dr = cmd.ExecuteReader();
                     if (dr.Read())
                     {
                         MessageBox.Show("Bu alana ait Server bulunmaktadır.Farklı bir server giriniz");
@@ -763,7 +756,7 @@ namespace Hotspot_Sİstemi_V0._1
                     {
                         dr.Close();
                         string kayit = "insert into ServerTBL(serverAdi,ipAdres,kullaniciAdi,sifre) values (@serverAdi,@ipAdres,@kullaniciAdi,@sifre)";
-                        SqlCommand komut = new SqlCommand(kayit, baglanti);
+                        SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
                         komut.Parameters.AddWithValue("@serverAdi", textBox1.Text);
                         komut.Parameters.AddWithValue("@ipAdres", textBox3.Text);
                         komut.Parameters.AddWithValue("@kullaniciAdi", textBox2.Text);
@@ -789,7 +782,7 @@ namespace Hotspot_Sİstemi_V0._1
 
                 try
                 {
-                    SqlCommandBuilder cmdBldr = new SqlCommandBuilder(da); //güncelleme
+                    SqlCeCommandBuilder cmdBldr = new SqlCeCommandBuilder(da); //güncelleme
                     cmdBldr.GetUpdateCommand();
                     da.Update(dt);
 
@@ -825,8 +818,8 @@ namespace Hotspot_Sİstemi_V0._1
                 {
                     MessageBox.Show("Gerekli alanları doğru şekilde giriniz");
                 }
-                GenelSayfa_Load(sender, e);
             }
+            GenelSayfa_Load(sender, e);
         }
 
         private void dataGridView1_DoubleClick(object sender, EventArgs e)
@@ -854,8 +847,8 @@ namespace Hotspot_Sİstemi_V0._1
                 textBox5.Text = listBox6.SelectedItem.ToString();
                 try
                 {
-                    SqlConnection baglanti = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=Hotspot;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
-                    SqlCommand komut = new SqlCommand();
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand komut = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
                     {
                         baglanti.Open();
@@ -863,7 +856,7 @@ namespace Hotspot_Sİstemi_V0._1
                     komut.Connection = baglanti;
                     komut.CommandText = "select * from ServerTBL where serverAdi='" + textBox5.Text + "'";
                     komut.ExecuteNonQuery();
-                    SqlDataReader dr = komut.ExecuteReader();
+                    SqlCeDataReader dr = komut.ExecuteReader();
                     if (dr.Read())
                     {
                         svID = dr["serverId"].ToString();
@@ -892,11 +885,90 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button17_Click(object sender, EventArgs e)
         {
-            textBox8.Text = textBox12.Text;
-            textBox7.Text = textBox11.Text;
-            saatTxt.Text = textBox13.Text;
-            dateTimePicker4.Text = dateTimePicker2.Text;
-            button10_Click(sender, e);
+            //textBox8.Text = textBox12.Text;
+            //textBox7.Text = textBox11.Text;
+            //saatTxt.Text = textBox13.Text;
+            //dateTimePicker2 = dateTimePicker4;
+            //button10_Click(sender, e);
+            if (textBox12.Text == "" || textBox11.Text == "")
+            {
+                MessageBox.Show("Gerekli (*) Alanları Doldurunuz");
+            }
+            else
+            {
+                try
+                {
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand cmd = new SqlCeCommand();
+                    if (baglanti.State == ConnectionState.Closed)
+                    {
+                        baglanti.Open();
+                    }
+                    cmd.Connection = baglanti;
+                    cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and (H.kullaniciAdi='" + textBox12.Text + "' and H.email='" + textBox6.Text + "') or H.kullaniciAdi='" + textBox12.Text + "'";
+                    cmd.ExecuteNonQuery();
+                    SqlCeDataReader dr = cmd.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        MessageBox.Show("Bu kullanıcı adına ait bir kullanıcı bulunmaktadır.");
+                        textBox12.Text = "";
+                        textBox11.Text = "";
+                        textBox6.Text = "";
+                        textBox13.Text = "";
+                    }
+                    else
+                    {
+                        dr.Close();//datareader i kapattık 
+
+                        //// mikrotik
+                        MK mikrotik = new MK(svIp);
+                        if (!mikrotik.Login(svKulAdi, svSifre))
+                        {
+                            MessageBox.Show("Bağlantı işlemi başarısız");
+                            mikrotik.Close();
+                            return;
+                        }
+                        else
+                        {
+                            mikrotik.Send("/ip/hotspot/user/add");
+                            mikrotik.Send("=name=" + textBox12.Text + "");
+                            mikrotik.Send("=password=" + textBox11.Text + "");
+                            mikrotik.Send("=profile=default", true);
+                            //KULLANICI EKLEME
+
+                            if (textBox13.Text == "")
+                            {
+                                saatEkle = TimeSpan.FromDays(365);
+                            }
+                            else
+                            {
+                                saatEkle = TimeSpan.FromHours(Convert.ToInt32(textBox13.Text));
+                            }
+
+                            //gün ve saat ekleme
+                            string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker4.Value.Add(saatEkle));//zamanı gün olarak arttırdık
+                            if (baglanti.State == ConnectionState.Closed)
+                                baglanti.Open();
+                            string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
+                            SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
+                            komut.Parameters.AddWithValue("@serverId", svID);
+                            komut.Parameters.AddWithValue("@kullaniciAdi", textBox12.Text);
+                            komut.Parameters.AddWithValue("@sifre", textBox11.Text);
+                            komut.Parameters.AddWithValue("@email", textBox6.Text);
+                            komut.Parameters.AddWithValue("@sure", date);
+                            komut.Parameters.AddWithValue("@telNo", telNoTxt.Text);
+                            komut.ExecuteNonQuery();
+                            MessageBox.Show("Kullanıcı Kayıt İşlemi Gerçekleşti.");
+                            baglanti.Close();
+                        }
+                    }
+                }
+                catch (Exception hata)
+                {
+                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                }
+
+            }
             GenelSayfa_Load(sender, e);
         }
 
@@ -904,17 +976,102 @@ namespace Hotspot_Sİstemi_V0._1
         {
             if (dataGridView1.CurrentRow!=null)
             {
-                string serverAdiAl = listBox6.SelectedItem.ToString();
+                //string serverAdiAl = listBox6.SelectedItem.ToString();
                 string kulAdiAl = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-                listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
-                listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
-                button11_Click(sender, e);
+                //    listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
+                //    listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
+                //    button11_Click(sender, e);
+                try
+                {
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand komut = new SqlCeCommand();
+                    if (baglanti.State == ConnectionState.Closed)
+                    {
+                        baglanti.Open();
+                    }
+                    komut.Connection = baglanti;
+                    komut.CommandText = "delete from HotspotTBL where kullaniciAdi='" + kulAdiAl + "' and serverId='" + dataGridView1.CurrentRow.Cells[0].Value.ToString() + "' ";
+                    komut.ExecuteNonQuery();
+                    serverVeriCek();
+                    MK mikrotik = new MK(svIp);
+                    if (!mikrotik.Login(svKulAdi, svSifre))
+                    {
+                        MessageBox.Show("Bağlantı işlemi başarısız");
+                        mikrotik.Close();
+                        return;
+                    }
+                    else
+                    {
+                        mikrotik.Send("/ip/hotspot/user/remove");
+                        mikrotik.Send("=.id=" + kulAdiAl + "", true);
+                    }
+                    MessageBox.Show("Kullanıcı Silindi");
+                    //groupBox2.Visible = false;
+                    button11.Enabled = false;
+                    button12.Enabled = false;
+                }
+                catch (Exception hata)
+                {
+                    MessageBox.Show("İşlem hatası" + hata.Message);
+                }
                 GenelSayfa_Load(sender, e);
             }
             else
             {
                 MessageBox.Show("Silmek istediğiniz kullanıcıyı seçiniz");
             }
+            //GenelSayfa_Load(sender, e);
+        }
+
+        private void label41_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateTimePicker4_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox13_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label39_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label40_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox11_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label37_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox12_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label38_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tabPage2_Click(object sender, EventArgs e)
+        {
+            MikroCek mc = new MikroCek();
+            mc.VeriAl(listBox7);
         }
     }
 }
