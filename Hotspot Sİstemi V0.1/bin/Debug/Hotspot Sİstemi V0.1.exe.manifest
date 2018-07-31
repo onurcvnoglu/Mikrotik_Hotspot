@@ -79,14 +79,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Hotspot Sİstemi V0.1.exe" size="2222040">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Hotspot Sİstemi V0.1.exe" size="2227672">
       <assemblyIdentity name="Hotspot Sİstemi V0.1" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>fRJmvU070seaSf4nqX5ICRftKTglx4pl09bxsomrLxg=</dsig:DigestValue>
+        <dsig:DigestValue>Fl7AnIfuZm8gE6t67h7GZ52sR//Up9KeWl/5Yn6oQXQ=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

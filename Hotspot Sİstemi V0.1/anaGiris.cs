@@ -74,7 +74,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sayac++;
 
-            if (sayac % 20 == 0)
+            if (sayac % 60 == 0)
             {
                 KullaniciSil kSil = new KullaniciSil();
                 kSil.kullanici_Sil();

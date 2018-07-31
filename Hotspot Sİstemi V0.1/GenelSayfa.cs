@@ -127,15 +127,6 @@ namespace Hotspot_Sİstemi_V0._1
         private void tabPage4_Enter(object sender, EventArgs e)
         {
             tabPage3_Enter(sender, e);
-            //
-            //listBox1.Items.Clear();
-            //sAyar.serverListele(listBox1);
-
-            //if (listBox1.Items.Count > 0)
-            //{
-            //    listBox1.SelectedIndex = 0;
-            //}
-            //
             listBox2.Items.Clear();
             yoneticiDuzenle.yoneticiListele(listBox2);
             listBox2.SelectedIndex = 0;
@@ -392,10 +383,6 @@ namespace Hotspot_Sİstemi_V0._1
             textBox5.Text = "";
             textBox8.Text = "";
             textBox8.ReadOnly = true;
-            //textBox8.Text = "";
-            //textBox8.ReadOnly = true;
-            //textBox7.Text = "";
-            //textBox7.ReadOnly = true;
             listBox3_SelectedIndexChanged(sender, e);
             saatTxt.Text = "";
             saatTxt.ReadOnly = false;
@@ -657,20 +644,6 @@ namespace Hotspot_Sİstemi_V0._1
             }
         }
 
-        private void dataGridView1_Click(object sender, EventArgs e)
-        {
-            //if (dataGridView1.CurrentCell!=null)
-            //{
-            //    tabControl1.SelectedTab = tabPage5;
-            //    button8_Click(sender, e);
-            //    string serverAdiAl = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-            //    string kulAdiAl = dataGridView1.CurrentRow.Cells[1].Value.ToString();
-            //    listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
-            //    listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
-            //}
-            
-        }
-
         private void tabPage1_Enter(object sender, EventArgs e)
         {
             GenelSayfa_Load(sender,e);
@@ -822,19 +795,6 @@ namespace Hotspot_Sİstemi_V0._1
             GenelSayfa_Load(sender, e);
         }
 
-        private void dataGridView1_DoubleClick(object sender, EventArgs e)
-        {
-            //if (dataGridView1.CurrentCell != null)
-            //{
-            //    tabControl1.SelectedTab = tabPage5;
-            //    button8_Click(sender, e);
-            //    string serverAdiAl = dataGridView1.CurrentRow.Cells[0].Value.ToString();
-            //    string kulAdiAl = dataGridView1.CurrentRow.Cells[1].Value.ToString();
-            //    listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
-            //    listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
-            //}
-        }
-
         private void button16_Click(object sender, EventArgs e)
         {
             GenelSayfa_Load(sender, e);
@@ -885,89 +845,91 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button17_Click(object sender, EventArgs e)
         {
-            //textBox8.Text = textBox12.Text;
-            //textBox7.Text = textBox11.Text;
-            //saatTxt.Text = textBox13.Text;
-            //dateTimePicker2 = dateTimePicker4;
-            //button10_Click(sender, e);
-            if (textBox12.Text == "" || textBox11.Text == "")
+            if (listBox6.SelectedItem==null)
             {
-                MessageBox.Show("Gerekli (*) Alanları Doldurunuz");
+                MessageBox.Show("Önce Server Ekleyiniz");
             }
             else
             {
-                try
+                if (textBox12.Text == "" || textBox11.Text == "")
                 {
-                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
-                    SqlCeCommand cmd = new SqlCeCommand();
-                    if (baglanti.State == ConnectionState.Closed)
+                    MessageBox.Show("Gerekli (*) Alanları Doldurunuz");
+                }
+                else
+                {
+                    try
                     {
-                        baglanti.Open();
-                    }
-                    cmd.Connection = baglanti;
-                    cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and (H.kullaniciAdi='" + textBox12.Text + "' and H.email='" + textBox6.Text + "') or H.kullaniciAdi='" + textBox12.Text + "'";
-                    cmd.ExecuteNonQuery();
-                    SqlCeDataReader dr = cmd.ExecuteReader();
-                    if (dr.Read())
-                    {
-                        MessageBox.Show("Bu kullanıcı adına ait bir kullanıcı bulunmaktadır.");
-                        textBox12.Text = "";
-                        textBox11.Text = "";
-                        textBox6.Text = "";
-                        textBox13.Text = "";
-                    }
-                    else
-                    {
-                        dr.Close();//datareader i kapattık 
-
-                        //// mikrotik
-                        MK mikrotik = new MK(svIp);
-                        if (!mikrotik.Login(svKulAdi, svSifre))
+                        SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                        SqlCeCommand cmd = new SqlCeCommand();
+                        if (baglanti.State == ConnectionState.Closed)
                         {
-                            MessageBox.Show("Bağlantı işlemi başarısız");
-                            mikrotik.Close();
-                            return;
+                            baglanti.Open();
+                        }
+                        cmd.Connection = baglanti;
+                        cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and (H.kullaniciAdi='" + textBox12.Text + "' and H.email='" + textBox6.Text + "') or H.kullaniciAdi='" + textBox12.Text + "'";
+                        cmd.ExecuteNonQuery();
+                        SqlCeDataReader dr = cmd.ExecuteReader();
+                        if (dr.Read())
+                        {
+                            MessageBox.Show("Bu kullanıcı adına ait bir kullanıcı bulunmaktadır.");
+                            textBox12.Text = "";
+                            textBox11.Text = "";
+                            textBox6.Text = "";
+                            textBox13.Text = "";
                         }
                         else
                         {
-                            mikrotik.Send("/ip/hotspot/user/add");
-                            mikrotik.Send("=name=" + textBox12.Text + "");
-                            mikrotik.Send("=password=" + textBox11.Text + "");
-                            mikrotik.Send("=profile=default", true);
-                            //KULLANICI EKLEME
+                            dr.Close();//datareader i kapattık 
 
-                            if (textBox13.Text == "")
+                            //// mikrotik
+                            MK mikrotik = new MK(svIp);
+                            if (!mikrotik.Login(svKulAdi, svSifre))
                             {
-                                saatEkle = TimeSpan.FromDays(365);
+                                MessageBox.Show("Bağlantı işlemi başarısız");
+                                mikrotik.Close();
+                                return;
                             }
                             else
                             {
-                                saatEkle = TimeSpan.FromHours(Convert.ToInt32(textBox13.Text));
-                            }
+                                mikrotik.Send("/ip/hotspot/user/add");
+                                mikrotik.Send("=name=" + textBox12.Text + "");
+                                mikrotik.Send("=password=" + textBox11.Text + "");
+                                mikrotik.Send("=profile=default", true);
+                                //KULLANICI EKLEME
 
-                            //gün ve saat ekleme
-                            string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker4.Value.Add(saatEkle));//zamanı gün olarak arttırdık
-                            if (baglanti.State == ConnectionState.Closed)
-                                baglanti.Open();
-                            string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
-                            SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
-                            komut.Parameters.AddWithValue("@serverId", svID);
-                            komut.Parameters.AddWithValue("@kullaniciAdi", textBox12.Text);
-                            komut.Parameters.AddWithValue("@sifre", textBox11.Text);
-                            komut.Parameters.AddWithValue("@email", textBox6.Text);
-                            komut.Parameters.AddWithValue("@sure", date);
-                            komut.Parameters.AddWithValue("@telNo", telNoTxt.Text);
-                            komut.ExecuteNonQuery();
-                            MessageBox.Show("Kullanıcı Kayıt İşlemi Gerçekleşti.");
-                            baglanti.Close();
+                                if (textBox13.Text == "")
+                                {
+                                    saatEkle = TimeSpan.FromDays(365);
+                                }
+                                else
+                                {
+                                    saatEkle = TimeSpan.FromHours(Convert.ToInt32(textBox13.Text));
+                                }
+
+                                //gün ve saat ekleme
+                                string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker4.Value.Add(saatEkle));//zamanı gün olarak arttırdık
+                                if (baglanti.State == ConnectionState.Closed)
+                                    baglanti.Open();
+                                string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
+                                SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
+                                komut.Parameters.AddWithValue("@serverId", svID);
+                                komut.Parameters.AddWithValue("@kullaniciAdi", textBox12.Text);
+                                komut.Parameters.AddWithValue("@sifre", textBox11.Text);
+                                komut.Parameters.AddWithValue("@email", textBox6.Text);
+                                komut.Parameters.AddWithValue("@sure", date);
+                                komut.Parameters.AddWithValue("@telNo", telNoTxt.Text);
+                                komut.ExecuteNonQuery();
+                                MessageBox.Show("Kullanıcı Kayıt İşlemi Gerçekleşti.");
+                                baglanti.Close();
+                            }
                         }
                     }
-                }
-                catch (Exception hata)
-                {
-                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
-                }
+                    catch (Exception hata)
+                    {
+                        MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                    }
 
+                }
             }
             GenelSayfa_Load(sender, e);
         }
@@ -1067,11 +1029,97 @@ namespace Hotspot_Sİstemi_V0._1
         {
 
         }
-
-        private void tabPage2_Click(object sender, EventArgs e)
+        private void button19_Click(object sender, EventArgs e)
         {
             MikroCek mc = new MikroCek();
-            mc.VeriAl(listBox7);
+            mc.VeriAl(svIp, svKulAdi, svSifre, Convert.ToInt32(svID));
+            GenelSayfa_Load(sender, e);
+        }
+
+        private void button20_Click(object sender, EventArgs e)
+        {
+            if (listBox6.SelectedItem==null)
+            {
+                MessageBox.Show("Önce Server Ekleyiniz");
+            }
+            else
+            {
+                Random rastgele = new Random();
+                string harfler = "ABCDEFGHIJKLMNOPRSTUXVYZabcdefghijklmnoprstxuvyz0123456789";
+                string sayilar = "0123456789";
+                string kelime = "";
+                string sayi = "";
+                for (int i = 0; i < 4; i++)
+                {
+                    kelime += harfler[rastgele.Next(harfler.Length)];
+                }
+                textBox12.Text = kelime;
+                for (int i = 0; i < 4; i++)
+                {
+                    sayi += sayilar[rastgele.Next(sayilar.Length)];
+                }
+                textBox11.Text = sayi;
+                textBox13.Text = "24";
+                button17_Click(sender, e);
+            }
+            textBox11.Text = "";
+            textBox12.Text = "";
+            textBox13.Text = "";
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            svIdGuncel = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+            try
+            {
+                SqlCeCommandBuilder cmdBldr = new SqlCeCommandBuilder(da); //güncelleme
+                cmdBldr.GetUpdateCommand();
+                da.Update(dt);
+
+                serverVeriCek();
+                MK mikrotik = new MK(svIp);
+                if (!mikrotik.Login(svKulAdi, svSifre))
+                {
+                    MessageBox.Show("Bağlantı işlemi başarısız");
+                    mikrotik.Close();
+                    return;
+                }
+                else
+                {
+                    mikrotik.Send("/ip/hotspot/user/remove");
+                    mikrotik.Send("=.id=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "", true);
+                }
+                if (!mikrotik.Login(svKulAdi, svSifre))
+                {
+                    MessageBox.Show("Bağlantı işlemi başarısız");
+                    mikrotik.Close();
+                    return;
+                }
+                else
+                {
+                    mikrotik.Send("/ip/hotspot/user/add");
+                    mikrotik.Send("=name=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "");
+                    mikrotik.Send("=password=" + dataGridView1.CurrentRow.Cells[3].Value.ToString() + "");
+                    mikrotik.Send("=profile=default", true);
+                }
+                //MessageBox.Show("Kullanıcı Güncellendi");
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Gerekli alanları doğru şekilde giriniz");
+            }
+        }
+
+        private void GenelSayfa_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode==Keys.Delete)
+            {
+                button18_Click(sender, e);
+            }
+            if (e.KeyCode==Keys.Enter)
+            {
+                dataGridView1.Focus();
+            }
         }
     }
 }
