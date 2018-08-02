@@ -9,6 +9,7 @@ namespace Hotspot_Sİstemi_V0._1
 {
 	static class Program
 	{
+        public static string VersiyonNo = "1";
 		/// <summary>
 		/// Uygulamanın ana girdi noktası.
 		/// </summary>

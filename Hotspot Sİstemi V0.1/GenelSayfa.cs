@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.Data.SqlServerCe;
+using System.Net;
+using System.IO;
 
 namespace Hotspot_Sİstemi_V0._1
 {
@@ -36,11 +38,6 @@ namespace Hotspot_Sİstemi_V0._1
             InitializeComponent();
         }
 
-        private void tabPage1_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
             dateTimePicker4.Value = DateTime.Now;
@@ -49,11 +46,8 @@ namespace Hotspot_Sİstemi_V0._1
             timer1.Start();
             SqlCeCommand cmd = new SqlCeCommand("Select * from HotspotTBL order by sure", baglanti);
             da = new SqlCeDataAdapter(cmd);
-            //ds = new DataSet();
             dt = new DataTable();
-            //dr.Fill(ds, "Fill");
             da.Fill(dt);
-            //dataGridView1.DataSource = ds.Tables[0];
             dataGridView1.DataSource = dt;
             //isimleri değiştirme
 
@@ -61,12 +55,12 @@ namespace Hotspot_Sİstemi_V0._1
             dataGridView1.Columns[2].HeaderCell.Value = "Kullanıcı Adı";
             dataGridView1.Columns[3].HeaderCell.Value = "Şifre";
             dataGridView1.Columns[5].HeaderCell.Value = "Süre";
+            dataGridView1.Columns[6].HeaderCell.Value = "Telefon No";
             dataGridView1.CurrentCell = null;
             dataGridView1.Columns[2].ReadOnly = true;
             dataGridView1.Columns[0].Visible = false;
             dataGridView1.Columns[1].Visible = false;
             dataGridView1.Columns[4].Visible = false;
-            dataGridView1.Columns[6].Visible = false;
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -421,6 +415,11 @@ namespace Hotspot_Sİstemi_V0._1
         {
             try
             {
+                //
+                ArsivEkle aEkle = new ArsivEkle();
+                anaGiris agiris = new anaGiris();
+                aEkle.Listele(textBox10.Text, svIdGuncel);
+                //
                 SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
                 SqlCeCommand komut = new SqlCeCommand();
                 if (baglanti.State == ConnectionState.Closed)
@@ -917,7 +916,7 @@ namespace Hotspot_Sİstemi_V0._1
                                 komut.Parameters.AddWithValue("@sifre", textBox11.Text);
                                 komut.Parameters.AddWithValue("@email", textBox6.Text);
                                 komut.Parameters.AddWithValue("@sure", date);
-                                komut.Parameters.AddWithValue("@telNo", telNoTxt.Text);
+                                komut.Parameters.AddWithValue("@telNo", textBox14.Text);
                                 komut.ExecuteNonQuery();
                                 MessageBox.Show("Kullanıcı Kayıt İşlemi Gerçekleşti.");
                                 baglanti.Close();
@@ -938,11 +937,11 @@ namespace Hotspot_Sİstemi_V0._1
         {
             if (dataGridView1.CurrentRow!=null)
             {
-                //string serverAdiAl = listBox6.SelectedItem.ToString();
                 string kulAdiAl = dataGridView1.CurrentRow.Cells[2].Value.ToString();
-                //    listBox4.SelectedItem = listBox4.GetItemText(serverAdiAl);
-                //    listBox5.SelectedItem = listBox5.GetItemText(kulAdiAl);
-                //    button11_Click(sender, e);
+                //
+                ArsivEkle aEkle = new ArsivEkle();
+                aEkle.Listele(kulAdiAl, dataGridView1.CurrentRow.Cells[0].Value.ToString());
+                //
                 try
                 {
                     SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
@@ -968,7 +967,7 @@ namespace Hotspot_Sİstemi_V0._1
                         mikrotik.Send("=.id=" + kulAdiAl + "", true);
                     }
                     MessageBox.Show("Kullanıcı Silindi");
-                    //groupBox2.Visible = false;
+                    
                     button11.Enabled = false;
                     button12.Enabled = false;
                 }
@@ -986,11 +985,6 @@ namespace Hotspot_Sİstemi_V0._1
         }
 
         private void label41_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dateTimePicker4_ValueChanged(object sender, EventArgs e)
         {
 
         }
@@ -1031,8 +1025,15 @@ namespace Hotspot_Sİstemi_V0._1
         }
         private void button19_Click(object sender, EventArgs e)
         {
-            MikroCek mc = new MikroCek();
-            mc.VeriAl(svIp, svKulAdi, svSifre, Convert.ToInt32(svID));
+            if (listBox6.SelectedItem==null)
+            {
+                MessageBox.Show("Önce Server Ekleyiniz");
+            }
+            else
+            {
+                MikroCek mc = new MikroCek();
+                mc.VeriAl(svIp, svKulAdi, svSifre, Convert.ToInt32(svID));
+            }
             GenelSayfa_Load(sender, e);
         }
 
@@ -1045,7 +1046,7 @@ namespace Hotspot_Sİstemi_V0._1
             else
             {
                 Random rastgele = new Random();
-                string harfler = "ABCDEFGHIJKLMNOPRSTUXVYZabcdefghijklmnoprstxuvyz0123456789";
+                string harfler = "0123456789";
                 string sayilar = "0123456789";
                 string kelime = "";
                 string sayi = "";
@@ -1120,6 +1121,80 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 dataGridView1.Focus();
             }
+        }
+        private void GenelSayfa_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void tabPage2_Enter(object sender, EventArgs e)
+        {
+            SqlCeCommand cmd = new SqlCeCommand("Select yoneticiAdi,kullaniciAdi,sifre,email,tarih,telNo from ArsivTBL", baglanti);
+            da = new SqlCeDataAdapter(cmd);
+            dt = new DataTable();
+            da.Fill(dt);
+            dataGridView2.DataSource = dt;
+            dataGridView2.Columns[0].HeaderCell.Value = "Yönetici Adı";
+            dataGridView2.Columns[1].HeaderCell.Value = "Kullanıcı Adı";
+            dataGridView2.Columns[2].HeaderCell.Value = "Şifre";
+            dataGridView2.Columns[3].HeaderCell.Value = "E-Posta";
+            dataGridView2.Columns[4].HeaderCell.Value = "Tarih";
+            dataGridView2.Columns[5].HeaderCell.Value = "Telefon No";
+            //dataGridView2.Columns[0].Visible = false;
+            dataGridView2.CurrentCell = null;
+        }
+
+        private void button21_Click(object sender, EventArgs e)
+        {
+            ArsivEkle aEkle = new ArsivEkle();
+            aEkle.excele_aktar(dataGridView2);
+        }
+
+        private void verKontrol_Click(object sender, EventArgs e)
+        {
+            UpdateEdilsinMi();
+        }
+        private void UpdateEdilsinMi()
+        {
+            if (updateKontrol())
+            {
+
+                DialogResult cevap = MessageBox.Show("Güncellemek İster misiniz?", "Güncelleme Bulundu!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                if (cevap==DialogResult.Yes)
+                {
+                    System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(updateEt));
+                    thread.Start();
+                }
+            }
+        }
+        public static void updateEt()
+        {
+            Application.Run(new updateProgress());
+        }
+        private Boolean updateKontrol()
+        {
+            Boolean durum;
+            try
+            {
+                WebClient webclient = new WebClient();
+                Stream webstream = webclient.OpenRead("http://localhost/update/versiyonKontrol.php?versiyon="+Program.VersiyonNo);
+                StreamReader streamreader = new StreamReader(webstream);
+                String donenyanit = streamreader.ReadToEnd();
+                if (donenyanit== "Güncelleme Gerekli")
+                {
+                    durum = true;
+                }
+                else
+                {
+                    MessageBox.Show("Programınız Güncel");
+                    durum = false;
+                }
+            }
+            catch (Exception)
+            {
+                durum = false;
+            }
+            return durum;
         }
     }
 }

@@ -83,6 +83,11 @@ namespace Hotspot_Sİstemi_V0._1
         {
             try
             {
+                //
+                ArsivEkle aEkle = new ArsivEkle();
+                aEkle.serverListele(serverAdiSil.Text);
+                //
+
                 SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
                 SqlCeCommand komut = new SqlCeCommand();
                 if (baglanti.State==ConnectionState.Closed)

@@ -61,6 +61,7 @@ namespace Hotspot_Sİstemi_V0._1
                     Properties.Settings.Default["sifre"] = "";
                     Properties.Settings.Default.Reset();
                 }
+                Properties.Settings.Default["yoneticiAdi"] = textBox1.Text;
             }
             else
             {
@@ -79,6 +80,11 @@ namespace Hotspot_Sİstemi_V0._1
                 KullaniciSil kSil = new KullaniciSil();
                 kSil.kullanici_Sil();
             }
+        }
+
+        private void anaGiris_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

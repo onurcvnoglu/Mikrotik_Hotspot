@@ -36,6 +36,10 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 svId = dr["serverId"].ToString();
                 kullaniciAdi = dr["kullaniciAdi"].ToString();
+                //
+                ArsivEkle aEkle = new ArsivEkle();
+                aEkle.Listele(kullaniciAdi, svId);
+                //
                 serverVeri();
                 MK mikrotik = new MK(svIp);
                 if (!mikrotik.Login(svKulAdi, svSifre))
@@ -51,7 +55,7 @@ namespace Hotspot_Sİstemi_V0._1
                 }
             }
             dr.Close();
-
+            
             komut.CommandText = "delete from HotspotTBL where sure < '" + date + "' ";
             komut.ExecuteNonQuery();
             ////

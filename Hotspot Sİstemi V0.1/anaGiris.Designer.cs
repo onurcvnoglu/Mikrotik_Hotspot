@@ -200,6 +200,7 @@
             this.Name = "anaGiris";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Giriş Sayfası";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.anaGiris_FormClosed);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.groupBox1.ResumeLayout(false);

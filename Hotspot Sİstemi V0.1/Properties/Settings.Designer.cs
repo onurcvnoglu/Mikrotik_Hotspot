@@ -57,5 +57,17 @@ namespace Hotspot_Sİstemi_V0._1.Properties {
                 this["sifre"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string yoneticiAdi {
+            get {
+                return ((string)(this["yoneticiAdi"]));
+            }
+            set {
+                this["yoneticiAdi"] = value;
+            }
+        }
     }
 }

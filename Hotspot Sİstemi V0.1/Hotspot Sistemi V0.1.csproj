@@ -13,20 +13,25 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>C:\Hotspot\</PublishUrl>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>C:\UwAmp\www\my-app\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
+    <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>4</ApplicationRevision>
+    <InstallUrl>http://localhost/my-app/</InstallUrl>
+    <ProductName>Hotspot Sistemi</ProductName>
+    <MinimumRequiredVersion>1.0.0.4</MinimumRequiredVersion>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -76,6 +81,12 @@
     <Reference Include="EntityFramework.SqlServerCompact, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.SqlServerCompact.6.2.0\lib\net45\EntityFramework.SqlServerCompact.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\..\..\..\Microsoft.Office.Interop.Excel.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -87,7 +98,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
@@ -102,6 +112,7 @@
     <Compile Include="anaGiris.Designer.cs">
       <DependentUpon>anaGiris.cs</DependentUpon>
     </Compile>
+    <Compile Include="ArsivEkle.cs" />
     <Compile Include="DataGridServerCek.cs" />
     <Compile Include="GenelSayfa.cs">
       <SubType>Form</SubType>
@@ -122,6 +133,12 @@
     </Compile>
     <Compile Include="serverDuzen.Designer.cs">
       <DependentUpon>serverDuzen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="updateProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="updateProgress.Designer.cs">
+      <DependentUpon>updateProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="yoneticiAyar.cs">
       <SubType>Form</SubType>
@@ -166,6 +183,9 @@
     </Compile>
     <EmbeddedResource Include="serverDuzen.resx">
       <DependentUpon>serverDuzen.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="updateProgress.resx">
+      <DependentUpon>updateProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="yoneticiAyar.resx">
       <DependentUpon>yoneticiAyar.cs</DependentUpon>
@@ -219,9 +239,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="db\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
