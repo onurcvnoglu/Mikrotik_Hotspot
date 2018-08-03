@@ -63,29 +63,36 @@ namespace Hotspot_Sİstemi_V0._1
         }
         public void excele_aktar(DataGridView dg)
         {
-            dg.AllowUserToAddRows = false;
-            System.Globalization.CultureInfo dil = System.Threading.Thread.CurrentThread.CurrentCulture;
-            System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-us");
-            Microsoft.Office.Interop.Excel.Application Tablo = new Microsoft.Office.Interop.Excel.Application();
-            Microsoft.Office.Interop.Excel.Workbook kitap = Tablo.Workbooks.Add(true);
-            Microsoft.Office.Interop.Excel.Worksheet sayfa = (Microsoft.Office.Interop.Excel.Worksheet)Tablo.ActiveSheet;
-            System.Threading.Thread.CurrentThread.CurrentCulture = dil;
-            Tablo.Visible = true;
-            sayfa = (Worksheet)kitap.ActiveSheet;
-            for (int i = 0; i < dg.Rows.Count; i++)
+            try
             {
-                for (int j = 0; j < dg.ColumnCount; j++)
+                dg.AllowUserToAddRows = false;
+                System.Globalization.CultureInfo dil = System.Threading.Thread.CurrentThread.CurrentCulture;
+                System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("en-us");
+                Microsoft.Office.Interop.Excel.Application Tablo = new Microsoft.Office.Interop.Excel.Application();
+                Microsoft.Office.Interop.Excel.Workbook kitap = Tablo.Workbooks.Add(true);
+                Microsoft.Office.Interop.Excel.Worksheet sayfa = (Microsoft.Office.Interop.Excel.Worksheet)Tablo.ActiveSheet;
+                System.Threading.Thread.CurrentThread.CurrentCulture = dil;
+                Tablo.Visible = true;
+                sayfa = (Worksheet)kitap.ActiveSheet;
+                for (int i = 0; i < dg.Rows.Count; i++)
                 {
-                    if (i == 0)
+                    for (int j = 0; j < dg.ColumnCount; j++)
                     {
-                        Tablo.Cells[1, j + 1] = dg.Columns[j].HeaderText;
-                        Tablo.Cells[1, j + 1].ColumnWidth = 20;
+                        if (i == 0)
+                        {
+                            Tablo.Cells[1, j + 1] = dg.Columns[j].HeaderText;
+                            Tablo.Cells[1, j + 1].ColumnWidth = 20;
+                        }
+                        Tablo.Cells[i + 2, j + 1] = dg.Rows[i].Cells[j].Value.ToString();
                     }
-                    Tablo.Cells[i + 2, j + 1] = dg.Rows[i].Cells[j].Value.ToString();
                 }
+                Tablo.Visible = true;
+                Tablo.UserControl = true;
             }
-            Tablo.Visible = true;
-            Tablo.UserControl = true;
+            catch (Exception)
+            {
+                MessageBox.Show("Microsoft Office Excel Uygulaması Çalıştırılamadı.\n Bilgisayarınızda yüklü değil yada bozuk olabilir. ");
+            }
         }
 
         public void serverListele(string svAdiSil)

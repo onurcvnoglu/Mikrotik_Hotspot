@@ -40,6 +40,8 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
+            DosyaSil ds = new DosyaSil();
+            ds.SetupSil();
             dateTimePicker4.Value = DateTime.Now;
             dateTimePicker2.Value = DateTime.Now;
             kullanSil.kullanici_Sil();
@@ -1046,8 +1048,8 @@ namespace Hotspot_Sİstemi_V0._1
             else
             {
                 Random rastgele = new Random();
-                string harfler = "0123456789";
-                string sayilar = "0123456789";
+                string harfler = "123456789";
+                string sayilar = "123456789";
                 string kelime = "";
                 string sayi = "";
                 for (int i = 0; i < 4; i++)
@@ -1150,6 +1152,13 @@ namespace Hotspot_Sİstemi_V0._1
             aEkle.excele_aktar(dataGridView2);
         }
 
+        /// <summary>
+        // Versiyon Kontrol
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// 
+
         private void verKontrol_Click(object sender, EventArgs e)
         {
             UpdateEdilsinMi();
@@ -1177,7 +1186,7 @@ namespace Hotspot_Sİstemi_V0._1
             try
             {
                 WebClient webclient = new WebClient();
-                Stream webstream = webclient.OpenRead("http://localhost/update/versiyonKontrol.php?versiyon="+Program.VersiyonNo);
+                Stream webstream = webclient.OpenRead("http://ocvnoglu.hol.es/update/versiyonKontrol.php?versiyon=" + Program.VersiyonNo);
                 StreamReader streamreader = new StreamReader(webstream);
                 String donenyanit = streamreader.ReadToEnd();
                 if (donenyanit== "Güncelleme Gerekli")

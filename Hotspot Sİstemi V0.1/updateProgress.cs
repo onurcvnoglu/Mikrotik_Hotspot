@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Ionic.Zip;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,8 +17,8 @@ namespace Hotspot_Sİstemi_V0._1
 {
     public partial class updateProgress : Form
     {
-        private string indirilenDosya = Application.StartupPath + "\\dosyam.exe";
-        private string guncelDosya = "http://localhost/update/q.exe";
+        private string indirilenDosya = Application.StartupPath+"\\Hotspot Setup.zip";
+        private string guncelDosya = "http://ocvnoglu.hol.es/update/HotspotSetup.zip";
         private string dosyaAdi;
         public updateProgress()
         {
@@ -34,7 +38,7 @@ namespace Hotspot_Sİstemi_V0._1
             webclient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(ProgressChanged);
             webclient.DownloadFileAsync(new Uri(guncelDosya), indirilenDosya);
             string dosyaAdiUrl = guncelDosya;
-            int strLength = dosyaAdiUrl.LastIndexOf(".");
+            int strLength = dosyaAdiUrl.LastIndexOf("/");
             dosyaAdi = dosyaAdiUrl.Remove(0, strLength + 1);
 
         }
@@ -45,16 +49,22 @@ namespace Hotspot_Sİstemi_V0._1
         }
         private void tamamlandi(object sender,AsyncCompletedEventArgs e)
         {
-            durum.Text = "Tamamlandı..";
-            label2.Text = "Güncelleme İşlemi Tamamlandı";
+            durum.Text = "İndirme Tamamlandı..";
+            label2.Text = "Güncellemek için Kapat Tuşuna Basınız";
             label2.ForeColor = System.Drawing.Color.Green;
             pictureBox1.Visible = true;
+            
         }
 
         private void updateProgress_FormClosed(object sender, FormClosedEventArgs e)
         {
-            GenelSayfa gsf = new GenelSayfa();
-            gsf.Show();
+            Process.Start(Application.StartupPath + "\\Software Installer.exe");
+            Application.Exit();
+        }
+
+        private void updateBtnn_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }
