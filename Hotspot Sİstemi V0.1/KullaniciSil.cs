@@ -64,7 +64,7 @@ namespace Hotspot_Sİstemi_V0._1
             ///mikrotik
         }
 
-        public void serverVeri()  //Server Bİlgilerini Çektik.
+        public void serverVeri()  //Server Bilgilerini Çektik.
         {
             SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
             SqlCeCommand komut = new SqlCeCommand();
@@ -85,9 +85,46 @@ namespace Hotspot_Sİstemi_V0._1
             baglanti.Close();
         }
 
-        public void MikrotikKullaniciSil()
+        public void kullaniciSifirla(DataGridView dg,ListBox listbox)
         {
-            
+            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+            SqlCeCommand komut = new SqlCeCommand();
+            if (baglanti.State == ConnectionState.Closed)
+            {
+                baglanti.Open();
+            }
+            komut.Connection = baglanti;
+            komut.CommandText = "select * from HotspotTBL H,ServerTBL S where S.serverAdi='"+listbox.SelectedItem+"'";
+            komut.ExecuteNonQuery();
+            SqlCeDataReader dr = komut.ExecuteReader();
+            while (dr.Read())
+            {
+                svId = dr["serverId"].ToString();
+                kullaniciAdi = dr["kullaniciAdi"].ToString();
+                //
+                ArsivEkle aEkle = new ArsivEkle();
+                aEkle.Listele(kullaniciAdi, svId);
+                //
+                serverVeri();
+                MK mikrotik = new MK(svIp);
+                if (!mikrotik.Login(svKulAdi, svSifre))
+                {
+                    MessageBox.Show("Bağlantı işlemi başarısız");
+                    mikrotik.Close();
+                    return;
+                }
+                else
+                {
+                    mikrotik.Send("/ip/hotspot/user/remove");
+                    mikrotik.Send("=.id=" + kullaniciAdi + "", true);
+                }
+            }
+            dr.Close();
+            komut.CommandText = "delete from HotspotTBL where serverId='" + svId + "'";
+            komut.ExecuteNonQuery();
+            ////
+
+            baglanti.Close();
         }
     }
 }

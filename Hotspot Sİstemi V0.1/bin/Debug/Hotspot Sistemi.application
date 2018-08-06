@@ -14,14 +14,14 @@
     <framework targetVersion="4.6.1" profile="Full" supportedRuntime="4.0.30319" />
   </compatibleFrameworks>
   <dependency>
-    <dependentAssembly dependencyType="install" codebase="Hotspot Sistemi.exe.manifest" size="8638">
+    <dependentAssembly dependencyType="install" codebase="Hotspot Sistemi.exe.manifest" size="9995">
       <assemblyIdentity name="Hotspot Sistemi.exe" version="1.0.0.8" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Vdebw2EmuQCtLxpKe6NGmhLn659msg1fvOqDri+BSAg=</dsig:DigestValue>
+        <dsig:DigestValue>r8e7ALH1lPeloCHFtKsS73xHmxYQffoF4mQILIpNvXc=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

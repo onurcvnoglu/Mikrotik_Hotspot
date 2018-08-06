@@ -12,6 +12,9 @@ using System.Threading;
 using System.Data.SqlServerCe;
 using System.Net;
 using System.IO;
+using Newtonsoft.Json;
+using RestSharp;
+using Newtonsoft.Json.Linq;
 
 namespace Hotspot_Sİstemi_V0._1
 {
@@ -40,6 +43,7 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
+            tabControl1.TabPages.Remove(tabPage3);
             DosyaSil ds = new DosyaSil();
             ds.SetupSil();
             dateTimePicker4.Value = DateTime.Now;
@@ -655,8 +659,9 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sayac++;
 
-            if (sayac % 300 == 0)
+            if (sayac % 15 == 0)
             {
+                button22_Click(sender, e);
                 GenelSayfa_Load(sender, e);
                 sayac = 0;
             }
@@ -1204,6 +1209,125 @@ namespace Hotspot_Sİstemi_V0._1
                 durum = false;
             }
             return durum;
+        }
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        ///
+        public class Person
+        {
+            public string identityNumber { get; set; }
+            public string firstName { get; set; }
+            public string lastName { get; set; }
+            public string roomName { get; set; }
+        }
+
+        //
+        private void button22_Click(object sender, EventArgs e) //json verisi okuma
+        {
+            var client = new RestClient("https://pro2.hms.gen.tr/api/v1/inhotels");
+            var request = new RestRequest(Method.GET);
+            request.AddHeader("cache-control", "no-cache");
+            request.AddHeader("content-type", "application/json");
+            request.AddHeader("apiaccess", "api Code");
+            request.AddHeader("apikey", "Api Key");
+            request.AddHeader("apisecret", "api secret");
+            IRestResponse response = client.Execute(request);
+            textBox15.Text = response.Content;
+
+            File.WriteAllText(Application.StartupPath+"\\User.json", textBox15.Text);
+
+            using (System.IO.StreamReader _StreamReader = new System.IO.StreamReader(Application.StartupPath + "\\User.json"))
+            {
+                string jsonData = _StreamReader.ReadToEnd();
+                List<Person> listPerson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Person>>(jsonData);
+                
+                foreach (var _Person in listPerson)
+                {
+                    if (listBox6.SelectedItem == null)
+                    {
+
+                    }
+                    else
+                    {
+                        try
+                        {
+                            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                            SqlCeCommand cmd = new SqlCeCommand();
+                            if (baglanti.State == ConnectionState.Closed)
+                            {
+                                baglanti.Open();
+                            }
+                            cmd.Connection = baglanti;
+                            cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and H.kullaniciAdi='" + _Person.identityNumber + "'";
+                            cmd.ExecuteNonQuery();
+                            SqlCeDataReader dr = cmd.ExecuteReader();
+                            if (dr.Read())
+                            {
+
+                            }
+                            else
+                            {
+                                dr.Close();//datareader i kapattık 
+
+                                //// mikrotik
+
+                                MK mikrotik = new MK(svIp);
+                                if (!mikrotik.Login(svKulAdi, svSifre))
+                                {
+                                    MessageBox.Show("Bağlantı işlemi başarısız");
+                                    mikrotik.Close();
+                                    return;
+                                }
+                                else
+                                {
+                                    mikrotik.Send("/ip/hotspot/user/add");
+                                    mikrotik.Send("=name=" + _Person.identityNumber + "");
+                                    mikrotik.Send("=password=" + _Person.roomName + "");
+                                    mikrotik.Send("=profile=default", true);
+
+                                    //KULLANICI EKLEME
+
+                                    saatEkle = TimeSpan.FromDays(365);
+                                    //gün ve saat ekleme
+                                    string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker4.Value.Add(saatEkle));//zamanı gün olarak arttırdık
+                                    if (baglanti.State == ConnectionState.Closed)
+                                        baglanti.Open();
+                                    string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
+                                    SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
+                                    komut.Parameters.AddWithValue("@serverId", svID);
+                                    komut.Parameters.AddWithValue("@kullaniciAdi", _Person.identityNumber);
+                                    komut.Parameters.AddWithValue("@sifre", _Person.roomName);
+                                    komut.Parameters.AddWithValue("@email", "");
+                                    komut.Parameters.AddWithValue("@sure", date);
+                                    komut.Parameters.AddWithValue("@telNo", "");
+                                    komut.ExecuteNonQuery();
+                                    baglanti.Close();
+                                }
+                            }
+                        }
+                        catch (Exception hata)
+                        {
+                            MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                        }
+                    }
+                }
+                textBox15.Text = "";
+            }
+            if (File.Exists(Application.StartupPath + "\\User.json"))    //kullandıktan sonra json dosyasını sil..
+            {
+                File.Delete(Application.StartupPath + "\\User.json");
+            }
+        }
+
+        private void kullSifirlaBtn_Click(object sender, EventArgs e)
+        {
+            KullaniciSil ks = new KullaniciSil();
+            ks.kullaniciSifirla(dataGridView1, listBox6);
+            GenelSayfa_Load(sender, e);
+            MessageBox.Show("Tüm Kullanıcılar Silindi");
         }
     }
 }
