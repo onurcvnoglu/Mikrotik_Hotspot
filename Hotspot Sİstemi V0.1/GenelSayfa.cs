@@ -49,14 +49,14 @@ namespace Hotspot_Sİstemi_V0._1
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
             label46.Text = Properties.Settings.Default["otelKodu"].ToString(); // otel kodunu al, default olarak
-            //listBox6.SelectedIndex = 0;
+
             if (label46.Text!="")
             {
-                //timer2.Start();
+                timer2.Start();
             }
             else
             {
-                //timer2.Stop();
+                timer2.Stop();
             }
             tabControl1.TabPages.Remove(tabPage3);
             DosyaSil ds = new DosyaSil();
@@ -547,30 +547,11 @@ namespace Hotspot_Sİstemi_V0._1
                     button11.Enabled = false;
                     //
                     serverVeriCek();
-                    MK mikrotik = new MK(svIp);
-                    if (!mikrotik.Login(svKulAdi, svSifre))
+                    using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
                     {
-                        MessageBox.Show("Bağlantı işlemi başarısız");
-                        mikrotik.Close();
-                        return;
-                    }
-                    else
-                    {
-                        mikrotik.Send("/ip/hotspot/user/remove");
-                        mikrotik.Send("=.id=" + textBox10.Text + "", true);
-                    }
-                    if (!mikrotik.Login(svKulAdi, svSifre))
-                    {
-                        MessageBox.Show("Bağlantı işlemi başarısız");
-                        mikrotik.Close();
-                        return;
-                    }
-                    else
-                    {
-                        mikrotik.Send("/ip/hotspot/user/add");
-                        mikrotik.Send("=name=" + textBox10.Text + "");
-                        mikrotik.Send("=password=" + kulSifreTxt.Text + "");
-                        mikrotik.Send("=profile=default", true);
+                        connection.Open(svIp, svKulAdi, svSifre);
+                        var updateCmd = connection.CreateCommandAndParameters("/ip/hotspot/user/set", "password", kulSifreTxt.Text, TikSpecialProperties.Id, textBox10.Text);
+                        updateCmd.ExecuteNonQuery();
                     }
                 }
                 catch (Exception hata)
@@ -786,11 +767,11 @@ namespace Hotspot_Sİstemi_V0._1
             tabPage5_Enter(sender, e);
         }
 
-        private void button15_Click(object sender, EventArgs e)
+        private void button15_Click(object sender, EventArgs e) //anasayfa güncelle butonu
         {
-            if (dataGridView1.CurrentCell!=null)
+            if (dataGridView1.CurrentCell!=null)    //datagridde seçiliyse işlemi yapıyor
             {
-                svIdGuncel = dataGridView1.CurrentRow.Cells[0].Value.ToString();
+                svIdGuncel = dataGridView1.CurrentRow.Cells[0].Value.ToString();    //sv id ye seçili satırdaki serverin idsini atadık
 
                 try
                 {
@@ -799,30 +780,12 @@ namespace Hotspot_Sİstemi_V0._1
                     da.Update(dt);
 
                     serverVeriCek();
-                    MK mikrotik = new MK(svIp);
-                    if (!mikrotik.Login(svKulAdi, svSifre))
+                    using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
                     {
-                        MessageBox.Show("Bağlantı işlemi başarısız");
-                        mikrotik.Close();
-                        return;
-                    }
-                    else
-                    {
-                        mikrotik.Send("/ip/hotspot/user/remove");
-                        mikrotik.Send("=.id=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "", true);
-                    }
-                    if (!mikrotik.Login(svKulAdi, svSifre))
-                    {
-                        MessageBox.Show("Bağlantı işlemi başarısız");
-                        mikrotik.Close();
-                        return;
-                    }
-                    else
-                    {
-                        mikrotik.Send("/ip/hotspot/user/add");
-                        mikrotik.Send("=name=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "");
-                        mikrotik.Send("=password=" + dataGridView1.CurrentRow.Cells[3].Value.ToString() + "");
-                        mikrotik.Send("=profile=default", true);
+                        connection.Open(svIp, svKulAdi, svSifre);
+
+                        var updateCmd = connection.CreateCommandAndParameters("/ip/hotspot/user/set", "password", dataGridView1.CurrentRow.Cells[3].Value.ToString(), TikSpecialProperties.Id, dataGridView1.CurrentRow.Cells[2].Value.ToString());
+                        updateCmd.ExecuteNonQuery();
                     }
                     MessageBox.Show("Kullanıcı Güncellendi");
                 }
@@ -1027,7 +990,6 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 MessageBox.Show("Silmek istediğiniz kullanıcıyı seçiniz","Sil",MessageBoxButtons.OK,MessageBoxIcon.Warning);
             }
-            //GenelSayfa_Load(sender, e);
         }
 
         private void label41_Click(object sender, EventArgs e)
@@ -1126,32 +1088,13 @@ namespace Hotspot_Sİstemi_V0._1
                 da.Update(dt);
 
                 serverVeriCek();
-                MK mikrotik = new MK(svIp);
-                if (!mikrotik.Login(svKulAdi, svSifre))
+                using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
                 {
-                    MessageBox.Show("Bağlantı işlemi başarısız");
-                    mikrotik.Close();
-                    return;
+                    connection.Open(svIp, svKulAdi, svSifre);
+
+                    var updateCmd = connection.CreateCommandAndParameters("/ip/hotspot/user/set", "password", dataGridView1.CurrentRow.Cells[3].Value.ToString(), TikSpecialProperties.Id, dataGridView1.CurrentRow.Cells[2].Value.ToString());
+                    updateCmd.ExecuteNonQuery();
                 }
-                else
-                {
-                    mikrotik.Send("/ip/hotspot/user/remove");
-                    mikrotik.Send("=.id=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "", true);
-                }
-                if (!mikrotik.Login(svKulAdi, svSifre))
-                {
-                    MessageBox.Show("Bağlantı işlemi başarısız");
-                    mikrotik.Close();
-                    return;
-                }
-                else
-                {
-                    mikrotik.Send("/ip/hotspot/user/add");
-                    mikrotik.Send("=name=" + dataGridView1.CurrentRow.Cells[2].Value.ToString() + "");
-                    mikrotik.Send("=password=" + dataGridView1.CurrentRow.Cells[3].Value.ToString() + "");
-                    mikrotik.Send("=profile=default", true);
-                }
-                //MessageBox.Show("Kullanıcı Güncellendi");
             }
             catch (Exception)
             {
@@ -1173,7 +1116,6 @@ namespace Hotspot_Sİstemi_V0._1
         private void GenelSayfa_FormClosed(object sender, FormClosedEventArgs e)
         {
             timer1.Stop();
-            //timer2.Stop();
             Application.Exit();
         }
 
@@ -1380,7 +1322,7 @@ namespace Hotspot_Sİstemi_V0._1
                     File.Delete(Application.StartupPath + "\\User.json");
                 }
             }
-            catch (Exception h)
+            catch (Exception)
             {
                 MessageBox.Show("Kullanıcı Verileri Alınamadı. Otel Kodunuzu Giriniz");
             }
@@ -1509,7 +1451,6 @@ namespace Hotspot_Sİstemi_V0._1
                                         komut.Parameters.AddWithValue("@telNo", "");
                                         komut.ExecuteNonQuery();
                                         baglanti.Close();
-
                                         //
                                     }
                                 }
@@ -1528,15 +1469,15 @@ namespace Hotspot_Sİstemi_V0._1
                     Properties.Settings.Default["otelKodu"] = otelKodu;
                     label46.Text = Properties.Settings.Default["otelKodu"].ToString();
                     Properties.Settings.Default.Save();
-                    //timer2.Start();
+                    timer2.Start();
                 }
-                catch (Exception h)
+                catch (Exception)
                 {
                     MessageBox.Show("Kullanıcı Verileri Alınamadı. Otel Kodunuzu Tekrar Giriniz");
                     label46.Text = "";
                     Properties.Settings.Default["otelKodu"] = "";
                     Properties.Settings.Default.Save();
-                    //timer2.Stop();
+                    timer2.Stop();
                 }
             }
         }
@@ -1545,7 +1486,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sayac2++;
 
-            if (sayac2 % 40 == 0)
+            if (sayac2 % 173 == 0)
             {
                 button25_Click(sender, e);
                 GenelSayfa_Load(sender, e);
@@ -1703,13 +1644,13 @@ namespace Hotspot_Sİstemi_V0._1
                         File.Delete(Application.StartupPath + "\\User.json");
                     }
                 }
-                catch (Exception h)
+                catch (Exception)
                 {
                     MessageBox.Show("Kullanıcı Verileri Alınamadı. Otel Kodunuzu Tekrar Giriniz");
                     label46.Text = "";
                     Properties.Settings.Default["otelKodu"] = "";
                     Properties.Settings.Default.Save();
-                    //timer2.Stop();
+                    timer2.Stop();
                 }
                 //
             }
@@ -1744,7 +1685,6 @@ namespace Hotspot_Sİstemi_V0._1
                         textBox8.ReadOnly = false;
                         textBox7.ReadOnly = false;
                         textBox6.ReadOnly = false;
-                        //textBox7.ReadOnly = false;
                         saatTxt.ReadOnly = false;
                     }
                     dr.Close();

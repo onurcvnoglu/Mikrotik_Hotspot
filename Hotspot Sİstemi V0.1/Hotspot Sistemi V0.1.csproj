@@ -158,43 +158,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="serverAyar.cs" />
-    <Compile Include="serverDuzen.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="serverDuzen.Designer.cs">
-      <DependentUpon>serverDuzen.cs</DependentUpon>
-    </Compile>
     <Compile Include="updateProgress.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="updateProgress.Designer.cs">
       <DependentUpon>updateProgress.cs</DependentUpon>
     </Compile>
-    <Compile Include="yoneticiAyar.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="yoneticiAyar.Designer.cs">
-      <DependentUpon>yoneticiAyar.cs</DependentUpon>
-    </Compile>
-    <Compile Include="serverBilgi.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="serverBilgi.Designer.cs">
-      <DependentUpon>serverBilgi.cs</DependentUpon>
-    </Compile>
-    <Compile Include="serverEkle.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="serverEkle.Designer.cs">
-      <DependentUpon>serverEkle.cs</DependentUpon>
-    </Compile>
     <Compile Include="yonetici.cs" />
-    <Compile Include="yoneticiKayit.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="yoneticiKayit.Designer.cs">
-      <DependentUpon>yoneticiKayit.cs</DependentUpon>
-    </Compile>
     <Compile Include="yukleniyorEkranı.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,23 +187,8 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="serverDuzen.resx">
-      <DependentUpon>serverDuzen.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="updateProgress.resx">
       <DependentUpon>updateProgress.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="yoneticiAyar.resx">
-      <DependentUpon>yoneticiAyar.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="serverBilgi.resx">
-      <DependentUpon>serverBilgi.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="serverEkle.resx">
-      <DependentUpon>serverEkle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="yoneticiKayit.resx">
-      <DependentUpon>yoneticiKayit.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="yukleniyorEkranı.resx">
       <DependentUpon>yukleniyorEkranı.cs</DependentUpon>
