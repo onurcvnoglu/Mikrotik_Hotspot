@@ -29,24 +29,32 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 try
                 {
-                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
-                    SqlCeCommand cmd = new SqlCeCommand();
-                    if (baglanti.State == ConnectionState.Closed)
+                    MK mikrotik = new MK(ipAdres.Text);
+                    if (mikrotik.Login(kullaniciAdi.Text,sifre.Text))
                     {
-                        baglanti.Open();
+                        SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                        SqlCeCommand cmd = new SqlCeCommand();
+                        if (baglanti.State == ConnectionState.Closed)
+                        {
+                            baglanti.Open();
+                        }
+                        cmd.Connection = baglanti;
+                        cmd.CommandText = "update ServerTBL set sifre=@sifre, kullaniciAdi=@kullaniciAdi, ipAdres=@ipAdres where serverAdi='" + serverAdi.Text + "' ";
+                        cmd.Parameters.AddWithValue("@sifre", sifre.Text);
+                        cmd.Parameters.AddWithValue("@ipAdres", ipAdres.Text);
+                        cmd.Parameters.AddWithValue("@kullaniciAdi", kullaniciAdi.Text);
+                        cmd.ExecuteNonQuery();
+                        baglanti.Close();
+                        MessageBox.Show("Kullanıcı Bilgileri Güncellendi","Güncelleme",MessageBoxButtons.OK,MessageBoxIcon.Information);
                     }
-                    cmd.Connection = baglanti;
-                    cmd.CommandText = "update ServerTBL set sifre=@sifre, kullaniciAdi=@kullaniciAdi, ipAdres=@ipAdres where serverAdi='" + serverAdi.Text + "' ";
-                    cmd.Parameters.AddWithValue("@sifre", sifre.Text);
-                    cmd.Parameters.AddWithValue("@ipAdres", ipAdres.Text);
-                    cmd.Parameters.AddWithValue("@kullaniciAdi", kullaniciAdi.Text);
-                    cmd.ExecuteNonQuery();
-                    baglanti.Close();
-                    MessageBox.Show("Kullanıcı Bilgileri Güncellendi");
+                    else
+                    {
+                        MessageBox.Show("Güncelleme İşlemi Başarısız. Bilgilerinizi Kontrol Ediniz", "Hata!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 catch (Exception hata)
                 {
-                    MessageBox.Show("Güncelleme işlemi başarısız " + hata.Message);
+                    MessageBox.Show("Güncelleme işlemi başarısız " + hata.Message,"Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 }
             }
         }
@@ -74,7 +82,7 @@ namespace Hotspot_Sİstemi_V0._1
             }
             else
             {
-                MessageBox.Show("Bu Server ile ilgili bilgi bulunmamaktadır.");
+                MessageBox.Show("Bu Server ile ilgili bilgi bulunmamaktadır.","Bilgi",MessageBoxButtons.OK,MessageBoxIcon.Information);
             }
             dr.Close();
             baglanti.Close();
@@ -97,11 +105,11 @@ namespace Hotspot_Sİstemi_V0._1
                 komut.Connection = baglanti;
                 komut.CommandText = "delete from ServerTBL where serverAdi='" + serverAdiSil.Text + "'";
                 komut.ExecuteNonQuery();
-                MessageBox.Show("Server Silindi");
+                MessageBox.Show("Server Silindi","Sil",MessageBoxButtons.OK,MessageBoxIcon.Information);
             }
             catch (Exception hata)
             {
-                MessageBox.Show("İşlem hatası" + hata.Message);
+                MessageBox.Show("İşlem hatası" + hata.Message,"Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
         public void serverListele(ListBox listbox)
@@ -166,7 +174,7 @@ namespace Hotspot_Sİstemi_V0._1
             }
             catch (Exception hata)
             {
-                MessageBox.Show("Bir hata ile karşılaştınız : " + hata.Message);
+                MessageBox.Show("Bir hata ile karşılaştınız : " + hata.Message,"Hata",MessageBoxButtons.OK,MessageBoxIcon.Error);
             }
         }
         public void routerSil(TextBox routerSilServerAdi)

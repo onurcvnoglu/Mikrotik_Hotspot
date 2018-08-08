@@ -5,13 +5,13 @@ using System.Runtime.InteropServices;
 // Bir bütünleştirilmiş koda ilişkin Genel Bilgiler aşağıdaki öznitelikler kümesiyle
 // denetlenir. Bütünleştirilmiş kod ile ilişkili bilgileri değiştirmek için
 // bu öznitelik değerlerini değiştirin.
-[assembly: AssemblyTitle("Hotspot Sİstemi V0.1")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("HMS Hotspot Yönetici Programı")]
+[assembly: AssemblyDescription("Yönetici Sİstemi")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Hotspot Sİstemi V0.1")]
+[assembly: AssemblyCompany("HMS")]
+[assembly: AssemblyProduct("Hotspot Sistemi V0.1")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("HMS Management Systems")]
 [assembly: AssemblyCulture("")]
 
 // ComVisible özniteliğinin false olarak ayarlanması bu bütünleştirilmiş koddaki türleri

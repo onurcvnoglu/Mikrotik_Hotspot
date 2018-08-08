@@ -18,7 +18,7 @@ namespace Hotspot_Sİstemi_V0._1
     public partial class updateProgress : Form
     {
         private string indirilenDosya = Application.StartupPath+"\\Hotspot Setup.zip";
-        private string guncelDosya = "http://ocvnoglu.hol.es/update/HotspotSetup.zip";
+        private string guncelDosya = "https://www.hmsotel.com/hotspot/HotspotSetup.zip";
         private string dosyaAdi;
         public updateProgress()
         {

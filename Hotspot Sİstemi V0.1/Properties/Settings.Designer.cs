@@ -69,5 +69,17 @@ namespace Hotspot_Sİstemi_V0._1.Properties {
                 this["yoneticiAdi"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string otelKodu {
+            get {
+                return ((string)(this["otelKodu"]));
+            }
+            set {
+                this["otelKodu"] = value;
+            }
+        }
     }
 }

@@ -15,12 +15,17 @@ using System.IO;
 using Newtonsoft.Json;
 using RestSharp;
 using Newtonsoft.Json.Linq;
+using System.Diagnostics;
+using tik4net;
+using tik4net.Objects;
+using tik4net.Objects.Ip.Hotspot;
 
 namespace Hotspot_Sİstemi_V0._1
 {
     public partial class GenelSayfa : Form
     {
         int sayac = 0;
+        int sayac2 = 0;
         SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
         SqlCeDataAdapter da;
         
@@ -43,6 +48,16 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void GenelSayfa_Load(object sender, EventArgs e)
         {
+            label46.Text = Properties.Settings.Default["otelKodu"].ToString(); // otel kodunu al, default olarak
+            //listBox6.SelectedIndex = 0;
+            if (label46.Text!="")
+            {
+                //timer2.Start();
+            }
+            else
+            {
+                //timer2.Stop();
+            }
             tabControl1.TabPages.Remove(tabPage3);
             DosyaSil ds = new DosyaSil();
             ds.SetupSil();
@@ -50,7 +65,7 @@ namespace Hotspot_Sİstemi_V0._1
             dateTimePicker2.Value = DateTime.Now;
             kullanSil.kullanici_Sil();
             timer1.Start();
-            SqlCeCommand cmd = new SqlCeCommand("Select * from HotspotTBL order by sure", baglanti);
+            SqlCeCommand cmd = new SqlCeCommand("Select * from HotspotTBL where serverId='"+svID+"' order by sure", baglanti);
             da = new SqlCeDataAdapter(cmd);
             dt = new DataTable();
             da.Fill(dt);
@@ -130,6 +145,7 @@ namespace Hotspot_Sİstemi_V0._1
             listBox2.Items.Clear();
             yoneticiDuzenle.yoneticiListele(listBox2);
             listBox2.SelectedIndex = 0;
+            tabPage5_Enter(sender,e);
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -184,9 +200,11 @@ namespace Hotspot_Sİstemi_V0._1
             listBox4.Items.Clear();
             listBox3.Items.Clear();
             listBox6.Items.Clear();
+            listBox7.Items.Clear();
             serverayar.serverListele(listBox6);
             serverayar.serverListele(listBox4);
             serverayar.serverListele(listBox3);
+            serverayar.serverListele(listBox7);
             if (listBox5.Items.Count > 0)
             {
                 listBox5.SelectedIndex = 0;
@@ -203,8 +221,10 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 listBox6.SelectedIndex = 0;
             }
-
-            //listBox3_SelectedIndexChanged(sender, e);
+            if (listBox7.Items.Count > 0)
+            {
+                listBox7.SelectedIndex = 0;
+            }
         }
 
         private void listBox3_SelectedIndexChanged(object sender, EventArgs e)
@@ -659,9 +679,8 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sayac++;
 
-            if (sayac % 15 == 0)
+            if (sayac % 1800 == 0)
             {
-                button22_Click(sender, e);
                 GenelSayfa_Load(sender, e);
                 sayac = 0;
             }
@@ -695,12 +714,15 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void guncelleBtn_Click_1(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             guncelleBtn_Click(sender, e);
+            tabPage5_Enter(sender, e);
         }
 
         private void silBtn_Click_1(object sender, EventArgs e)
         {
             silBtn_Click(sender, e);
+            tabPage5_Enter(sender, e);
         }
 
         private void button2_Click_1(object sender, EventArgs e)
@@ -710,6 +732,7 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button1_Click_1(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             //SERVER EKLEME
             if (textBox1.Text == "" || textBox3.Text == "" || textBox4.Text == "" || textBox2.Text == "")
             {
@@ -734,23 +757,33 @@ namespace Hotspot_Sİstemi_V0._1
                     else
                     {
                         dr.Close();
-                        string kayit = "insert into ServerTBL(serverAdi,ipAdres,kullaniciAdi,sifre) values (@serverAdi,@ipAdres,@kullaniciAdi,@sifre)";
-                        SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
-                        komut.Parameters.AddWithValue("@serverAdi", textBox1.Text);
-                        komut.Parameters.AddWithValue("@ipAdres", textBox3.Text);
-                        komut.Parameters.AddWithValue("@kullaniciAdi", textBox2.Text);
-                        komut.Parameters.AddWithValue("@sifre", textBox4.Text);
-                        komut.ExecuteNonQuery();
-                        baglanti.Close();
-                        MessageBox.Show("Server Kayıt İşlemi Gerçekleşti.");
+                        MK mikrotik = new MK(textBox3.Text);
+                        if (mikrotik.Login(textBox2.Text,textBox4.Text))
+                        {
+                            string kayit = "insert into ServerTBL(serverAdi,ipAdres,kullaniciAdi,sifre) values (@serverAdi,@ipAdres,@kullaniciAdi,@sifre)";
+                            SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
+                            komut.Parameters.AddWithValue("@serverAdi", textBox1.Text);
+                            komut.Parameters.AddWithValue("@ipAdres", textBox3.Text);
+                            komut.Parameters.AddWithValue("@kullaniciAdi", textBox2.Text);
+                            komut.Parameters.AddWithValue("@sifre", textBox4.Text);
+                            komut.ExecuteNonQuery();
+                            baglanti.Close();
+                            MessageBox.Show("Server Kayıt İşlemi Gerçekleşti.");
+                            button13_Click(sender, e);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Server Bağlantısı Başarısız.Tekrar Deneyiniz", "Hata!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     baglanti.Close();
                 }
-                catch (Exception hata)
+                catch (Exception)
                 {
-                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                    MessageBox.Show("İşlem Sırasında Hata Oluştu.Server Bilgilerini Tekrar Giriniz");
                 }
             }
+            tabPage5_Enter(sender, e);
         }
 
         private void button15_Click(object sender, EventArgs e)
@@ -798,16 +831,24 @@ namespace Hotspot_Sİstemi_V0._1
                     MessageBox.Show("Gerekli alanları doğru şekilde giriniz");
                 }
             }
+            else
+            {
+                MessageBox.Show("Kullanıcı Seçiniz","Güncelleme",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+            }
             GenelSayfa_Load(sender, e);
         }
 
         private void button16_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+            Thread.Sleep(500);
             GenelSayfa_Load(sender, e);
         }
 
         private void listBox6_SelectedIndexChanged(object sender, EventArgs e)
         {
+            dataGridView1.DataSource = null;
+
             if (listBox6.SelectedItem != null)
             {
                 textBox5.Text = listBox6.SelectedItem.ToString();
@@ -837,16 +878,14 @@ namespace Hotspot_Sİstemi_V0._1
                         //textBox7.ReadOnly = false;
                         saatTxt.ReadOnly = false;
                     }
-                    else
-                    {
-
-                    }
+                    dr.Close();
                 }
                 catch (Exception hata)
                 {
                     MessageBox.Show("Bir hata oluştu" + hata.Message);
                 }
             }
+            GenelSayfa_Load(sender, e);
         }
 
         private void button17_Click(object sender, EventArgs e)
@@ -986,7 +1025,7 @@ namespace Hotspot_Sİstemi_V0._1
             }
             else
             {
-                MessageBox.Show("Silmek istediğiniz kullanıcıyı seçiniz");
+                MessageBox.Show("Silmek istediğiniz kullanıcıyı seçiniz","Sil",MessageBoxButtons.OK,MessageBoxIcon.Warning);
             }
             //GenelSayfa_Load(sender, e);
         }
@@ -1032,6 +1071,8 @@ namespace Hotspot_Sİstemi_V0._1
         }
         private void button19_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             if (listBox6.SelectedItem==null)
             {
                 MessageBox.Show("Önce Server Ekleyiniz");
@@ -1131,11 +1172,14 @@ namespace Hotspot_Sİstemi_V0._1
         }
         private void GenelSayfa_FormClosed(object sender, FormClosedEventArgs e)
         {
+            timer1.Stop();
+            //timer2.Stop();
             Application.Exit();
         }
 
         private void tabPage2_Enter(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             SqlCeCommand cmd = new SqlCeCommand("Select yoneticiAdi,kullaniciAdi,sifre,email,tarih,telNo from ArsivTBL", baglanti);
             da = new SqlCeDataAdapter(cmd);
             dt = new DataTable();
@@ -1147,18 +1191,19 @@ namespace Hotspot_Sİstemi_V0._1
             dataGridView2.Columns[3].HeaderCell.Value = "E-Posta";
             dataGridView2.Columns[4].HeaderCell.Value = "Tarih";
             dataGridView2.Columns[5].HeaderCell.Value = "Telefon No";
-            //dataGridView2.Columns[0].Visible = false;
             dataGridView2.CurrentCell = null;
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             ArsivEkle aEkle = new ArsivEkle();
             aEkle.excele_aktar(dataGridView2);
         }
 
         /// <summary>
-        // Versiyon Kontrol
+        ///                       Versiyon Kontrol
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -1170,7 +1215,7 @@ namespace Hotspot_Sİstemi_V0._1
         }
         private void UpdateEdilsinMi()
         {
-            if (updateKontrol())
+            if (UpdateKontrol())
             {
 
                 DialogResult cevap = MessageBox.Show("Güncellemek İster misiniz?", "Güncelleme Bulundu!", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
@@ -1185,13 +1230,13 @@ namespace Hotspot_Sİstemi_V0._1
         {
             Application.Run(new updateProgress());
         }
-        private Boolean updateKontrol()
+        private Boolean UpdateKontrol()
         {
             Boolean durum;
             try
             {
                 WebClient webclient = new WebClient();
-                Stream webstream = webclient.OpenRead("http://ocvnoglu.hol.es/update/versiyonKontrol.php?versiyon=" + Program.VersiyonNo);
+                Stream webstream = webclient.OpenRead("https://www.hmsotel.com/hotspot/versiyonKontrol.php?versiyon=" + Program.VersiyonNo);
                 StreamReader streamreader = new StreamReader(webstream);
                 String donenyanit = streamreader.ReadToEnd();
                 if (donenyanit== "Güncelleme Gerekli")
@@ -1224,69 +1269,82 @@ namespace Hotspot_Sİstemi_V0._1
             public string roomName { get; set; }
         }
 
-        //
         private void button22_Click(object sender, EventArgs e) //json verisi okuma
         {
-            var client = new RestClient("https://pro2.hms.gen.tr/api/v1/inhotels");
-            var request = new RestRequest(Method.GET);
-            request.AddHeader("cache-control", "no-cache");
-            request.AddHeader("content-type", "application/json");
-            request.AddHeader("apiaccess", "api Code");
-            request.AddHeader("apikey", "Api Key");
-            request.AddHeader("apisecret", "api secret");
-            IRestResponse response = client.Execute(request);
-            textBox15.Text = response.Content;
-
-            File.WriteAllText(Application.StartupPath+"\\User.json", textBox15.Text);
-
-            using (System.IO.StreamReader _StreamReader = new System.IO.StreamReader(Application.StartupPath + "\\User.json"))
+            try
             {
-                string jsonData = _StreamReader.ReadToEnd();
-                List<Person> listPerson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Person>>(jsonData);
-                
-                foreach (var _Person in listPerson)
+                var client = new RestClient("https://pro.hms.gen.tr/api/v1/inhotels");
+                var request = new RestRequest(Method.GET);
+                request.AddHeader("cache-control", "no-cache");
+                request.AddHeader("content-type", "application/json");
+                request.AddHeader("apiaccess", label46.Text);
+                request.AddHeader("apikey", "gBntSyYTyciViWbiF/t3kr9lMI6E+o5g8ghsWanm3Vg=");
+                request.AddHeader("apisecret", "8019ed4b2613c9c8958966e217fb7792bf65308e84fa8e60f2086c59a9e6dd58");
+                IRestResponse response = client.Execute(request);
+                textBox15.Text = response.Content;
+
+                File.WriteAllText(Application.StartupPath + "\\User.json", textBox15.Text);
+
+                using (System.IO.StreamReader _StreamReader = new System.IO.StreamReader(Application.StartupPath + "\\User.json"))
                 {
-                    if (listBox6.SelectedItem == null)
-                    {
+                    string jsonData = _StreamReader.ReadToEnd();
+                    List<Person> listPerson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Person>>(jsonData);
 
-                    }
-                    else
+                    foreach (var _Person in listPerson)
                     {
-                        try
+                        if (listBox6.SelectedItem == null)
                         {
-                            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
-                            SqlCeCommand cmd = new SqlCeCommand();
-                            if (baglanti.State == ConnectionState.Closed)
-                            {
-                                baglanti.Open();
-                            }
-                            cmd.Connection = baglanti;
-                            cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and H.kullaniciAdi='" + _Person.identityNumber + "'";
-                            cmd.ExecuteNonQuery();
-                            SqlCeDataReader dr = cmd.ExecuteReader();
-                            if (dr.Read())
-                            {
 
-                            }
-                            else
+                        }
+                        else
+                        {
+                            try
                             {
-                                dr.Close();//datareader i kapattık 
-
-                                //// mikrotik
-
-                                MK mikrotik = new MK(svIp);
-                                if (!mikrotik.Login(svKulAdi, svSifre))
+                                SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                                SqlCeCommand cmd = new SqlCeCommand();
+                                if (baglanti.State == ConnectionState.Closed)
                                 {
-                                    MessageBox.Show("Bağlantı işlemi başarısız");
-                                    mikrotik.Close();
-                                    return;
+                                    baglanti.Open();
+                                }
+                                cmd.Connection = baglanti;
+                                cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and H.kullaniciAdi='" + _Person.identityNumber + "'";
+                                cmd.ExecuteNonQuery();
+                                SqlCeDataReader dr = cmd.ExecuteReader();
+                                if (dr.Read())
+                                {
+                                    //
+                                    SqlCeCommand komut = new SqlCeCommand();
+                                    if (baglanti.State == ConnectionState.Closed)
+                                    {
+                                        baglanti.Open();
+                                    }
+                                    komut.Connection = baglanti;
+                                    komut.CommandText = "update HotspotTBL set sifre=@sifre where kullaniciAdi='" + _Person.identityNumber + "' ";
+                                    komut.Parameters.AddWithValue("@sifre", _Person.roomName);
+                                    komut.ExecuteNonQuery();
+                                    //
+                                    serverVeriCek();
+                                    using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
+                                    {
+                                        connection.Open(svIp, svKulAdi, svSifre);
+
+                                        var updateCmd = connection.CreateCommandAndParameters("/ip/hotspot/user/set", "password", _Person.roomName, TikSpecialProperties.Id, _Person.identityNumber);
+                                        updateCmd.ExecuteNonQuery();
+                                    }
+                                    //
                                 }
                                 else
                                 {
-                                    mikrotik.Send("/ip/hotspot/user/add");
-                                    mikrotik.Send("=name=" + _Person.identityNumber + "");
-                                    mikrotik.Send("=password=" + _Person.roomName + "");
-                                    mikrotik.Send("=profile=default", true);
+                                    dr.Close();//datareader i kapattık 
+
+                                    //// mikrotik
+                                    // 7 Ağustos
+                                    using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
+                                    {
+                                        connection.Open(svIp, svKulAdi, svSifre);
+                                        var createCommand = connection.CreateCommandAndParameters("/ip/hotspot/user/add", "name", _Person.identityNumber, "password", _Person.roomName);
+                                        createCommand.ExecuteScalar();
+                                    }
 
                                     //KULLANICI EKLEME
 
@@ -1305,29 +1363,397 @@ namespace Hotspot_Sİstemi_V0._1
                                     komut.Parameters.AddWithValue("@telNo", "");
                                     komut.ExecuteNonQuery();
                                     baglanti.Close();
+
+                                    //
                                 }
                             }
-                        }
-                        catch (Exception hata)
-                        {
-                            MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                            catch (Exception hata)
+                            {
+                                MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                            }
                         }
                     }
+                    textBox15.Text = "";
                 }
-                textBox15.Text = "";
+                if (File.Exists(Application.StartupPath + "\\User.json"))    //kullandıktan sonra json dosyasını sil..
+                {
+                    File.Delete(Application.StartupPath + "\\User.json");
+                }
             }
-            if (File.Exists(Application.StartupPath + "\\User.json"))    //kullandıktan sonra json dosyasını sil..
+            catch (Exception h)
             {
-                File.Delete(Application.StartupPath + "\\User.json");
+                MessageBox.Show("Kullanıcı Verileri Alınamadı. Otel Kodunuzu Giriniz");
             }
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// 
         private void kullSifirlaBtn_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             KullaniciSil ks = new KullaniciSil();
             ks.kullaniciSifirla(dataGridView1, listBox6);
             GenelSayfa_Load(sender, e);
-            MessageBox.Show("Tüm Kullanıcılar Silindi");
+            MessageBox.Show("Tüm Kullanıcılar Silindi", "Sıfırla", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+        }
+
+        private void button24_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+            if (listBox7.SelectedItem==null)
+            {
+                MessageBox.Show("Önce Server Ekleyiniz", "Uyarı!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                textBox16.Text = "";
+            }
+            else
+            {
+                string otelKodu = textBox16.Text;
+                textBox16.Text = "";
+                ///
+                try
+                {
+                    //
+                    MikroCek mc = new MikroCek();
+                    mc.VeriAl(svIp, svKulAdi, svSifre, Convert.ToInt32(svID));
+                    //
+                    var client = new RestClient("https://pro.hms.gen.tr/api/v1/inhotels");
+                    var request = new RestRequest(Method.GET);
+                    request.AddHeader("cache-control", "no-cache");
+                    request.AddHeader("content-type", "application/json");
+                    request.AddHeader("apiaccess", otelKodu);
+                    request.AddHeader("apikey", "gBntSyYTyciViWbiF/t3kr9lMI6E+o5g8ghsWanm3Vg=");
+                    request.AddHeader("apisecret", "8019ed4b2613c9c8958966e217fb7792bf65308e84fa8e60f2086c59a9e6dd58");
+                    IRestResponse response = client.Execute(request);
+                    textBox15.Text = response.Content;
+
+                    File.WriteAllText(Application.StartupPath + "\\User.json", textBox15.Text);
+
+                    using (System.IO.StreamReader _StreamReader = new System.IO.StreamReader(Application.StartupPath + "\\User.json"))
+                    {
+                        string jsonData = _StreamReader.ReadToEnd();
+                        List<Person> listPerson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Person>>(jsonData);
+
+                        foreach (var _Person in listPerson)
+                        {
+                            if (listBox6.SelectedItem == null)
+                            {
+
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                                    SqlCeCommand cmd = new SqlCeCommand();
+                                    if (baglanti.State == ConnectionState.Closed)
+                                    {
+                                        baglanti.Open();
+                                    }
+                                    cmd.Connection = baglanti;
+                                    cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and H.kullaniciAdi='" + _Person.identityNumber + "'";
+                                    cmd.ExecuteNonQuery();
+                                    SqlCeDataReader dr = cmd.ExecuteReader();
+                                    if (dr.Read())
+                                    {
+                                        //
+                                        SqlCeCommand komut = new SqlCeCommand();
+                                        if (baglanti.State == ConnectionState.Closed)
+                                        {
+                                            baglanti.Open();
+                                        }
+                                        komut.Connection = baglanti;
+                                        komut.CommandText = "update HotspotTBL set sifre=@sifre where kullaniciAdi='" + _Person.identityNumber + "' ";
+                                        komut.Parameters.AddWithValue("@sifre", _Person.roomName);
+                                        komut.ExecuteNonQuery();
+                                        //
+                                        serverVeriCek();
+                                        using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
+                                        {
+                                            connection.Open(svIp, svKulAdi, svSifre);
+
+                                            var updateCmd = connection.CreateCommandAndParameters("/ip/hotspot/user/set", "password", _Person.roomName, TikSpecialProperties.Id, _Person.identityNumber);
+                                            updateCmd.ExecuteNonQuery();
+                                        }
+                                        //
+                                    }
+                                    else
+                                    {
+                                        dr.Close();//datareader i kapattık 
+
+                                        //// mikrotik
+                                        // 7 Ağustos
+                                        using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
+                                        {
+                                            connection.Open(svIp, svKulAdi, svSifre);
+                                            var createCommand = connection.CreateCommandAndParameters("/ip/hotspot/user/add", "name", _Person.identityNumber, "password", _Person.roomName);
+                                            createCommand.ExecuteScalar();
+                                        }
+
+                                        //KULLANICI EKLEME
+
+                                        saatEkle = TimeSpan.FromDays(365);
+                                        //gün ve saat ekleme
+                                        string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker4.Value.Add(saatEkle));//zamanı gün olarak arttırdık
+                                        if (baglanti.State == ConnectionState.Closed)
+                                            baglanti.Open();
+                                        string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
+                                        SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
+                                        komut.Parameters.AddWithValue("@serverId", svID);
+                                        komut.Parameters.AddWithValue("@kullaniciAdi", _Person.identityNumber);
+                                        komut.Parameters.AddWithValue("@sifre", _Person.roomName);
+                                        komut.Parameters.AddWithValue("@email", "");
+                                        komut.Parameters.AddWithValue("@sure", date);
+                                        komut.Parameters.AddWithValue("@telNo", "");
+                                        komut.ExecuteNonQuery();
+                                        baglanti.Close();
+
+                                        //
+                                    }
+                                }
+                                catch (Exception hata)
+                                {
+                                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                                }
+                            }
+                        }
+                        textBox15.Text = "";
+                    }
+                    if (File.Exists(Application.StartupPath + "\\User.json"))    //kullandıktan sonra json dosyasını sil..
+                    {
+                        File.Delete(Application.StartupPath + "\\User.json");
+                    }
+                    Properties.Settings.Default["otelKodu"] = otelKodu;
+                    label46.Text = Properties.Settings.Default["otelKodu"].ToString();
+                    Properties.Settings.Default.Save();
+                    //timer2.Start();
+                }
+                catch (Exception h)
+                {
+                    MessageBox.Show("Kullanıcı Verileri Alınamadı. Otel Kodunuzu Tekrar Giriniz");
+                    label46.Text = "";
+                    Properties.Settings.Default["otelKodu"] = "";
+                    Properties.Settings.Default.Save();
+                    //timer2.Stop();
+                }
+            }
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            sayac2++;
+
+            if (sayac2 % 40 == 0)
+            {
+                button25_Click(sender, e);
+                GenelSayfa_Load(sender, e);
+                sayac2 = 0;
+            }
+        }
+
+        private void button23_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default["otelKodu"] = "";
+            label46.Text = "";
+            GenelSayfa_Load(sender, e);
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://hmsotel.com");
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://hmsotel.com");
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://hmsotel.com");
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://hmsotel.com");
+        }
+
+        private void button25_Click(object sender, EventArgs e)
+        {
+            Cursor.Current = Cursors.WaitCursor;
+
+            if (listBox6.SelectedItem == null)
+            {
+                MessageBox.Show("Önce Server Ekleyiniz");
+            }
+            else
+            {
+                try
+                {
+                    //
+                    MikroCek mc = new MikroCek();
+                    mc.VeriAl(svIp, svKulAdi, svSifre, Convert.ToInt32(svID));
+                    //
+                    var client = new RestClient("https://pro.hms.gen.tr/api/v1/inhotels");
+                    var request = new RestRequest(Method.GET);
+                    request.AddHeader("cache-control", "no-cache");
+                    request.AddHeader("content-type", "application/json");
+                    request.AddHeader("apiaccess", label46.Text);
+                    request.AddHeader("apikey", "gBntSyYTyciViWbiF/t3kr9lMI6E+o5g8ghsWanm3Vg=");
+                    request.AddHeader("apisecret", "8019ed4b2613c9c8958966e217fb7792bf65308e84fa8e60f2086c59a9e6dd58");
+                    IRestResponse response = client.Execute(request);
+                    textBox15.Text = response.Content;
+
+                    File.WriteAllText(Application.StartupPath + "\\User.json", textBox15.Text);
+
+                    using (System.IO.StreamReader _StreamReader = new System.IO.StreamReader(Application.StartupPath + "\\User.json"))
+                    {
+                        string jsonData = _StreamReader.ReadToEnd();
+                        List<Person> listPerson = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Person>>(jsonData);
+
+                        foreach (var _Person in listPerson)
+                        {
+                            if (listBox6.SelectedItem == null)
+                            {
+
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                                    SqlCeCommand cmd = new SqlCeCommand();
+                                    if (baglanti.State == ConnectionState.Closed)
+                                    {
+                                        baglanti.Open();
+                                    }
+                                    cmd.Connection = baglanti;
+                                    cmd.CommandText = "select * from HotspotTBL H , ServerTBL S where H.serverId='" + svID + "' and H.kullaniciAdi='" + _Person.identityNumber + "'";
+                                    cmd.ExecuteNonQuery();
+                                    SqlCeDataReader dr = cmd.ExecuteReader();
+                                    if (dr.Read())
+                                    {
+                                        //
+                                        SqlCeCommand komut = new SqlCeCommand();
+                                        if (baglanti.State == ConnectionState.Closed)
+                                        {
+                                            baglanti.Open();
+                                        }
+                                        komut.Connection = baglanti;
+                                        komut.CommandText = "update HotspotTBL set sifre=@sifre where kullaniciAdi='" + _Person.identityNumber + "' ";
+                                        komut.Parameters.AddWithValue("@sifre", _Person.roomName);
+                                        komut.ExecuteNonQuery();
+                                        //
+                                        serverVeriCek();
+                                        using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
+                                        {
+                                            connection.Open(svIp, svKulAdi, svSifre);
+
+                                            var updateCmd = connection.CreateCommandAndParameters("/ip/hotspot/user/set", "password", _Person.roomName, TikSpecialProperties.Id, _Person.identityNumber);
+                                            updateCmd.ExecuteNonQuery();
+                                        }
+                                        //
+                                    }
+                                    else
+                                    {
+                                        dr.Close();//datareader i kapattık 
+
+                                        //// mikrotik
+                                        // 7 Ağustos
+                                        using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
+                                        {
+                                            connection.Open(svIp, svKulAdi, svSifre);
+                                            var createCommand = connection.CreateCommandAndParameters("/ip/hotspot/user/add", "name", _Person.identityNumber, "password", _Person.roomName);
+                                            createCommand.ExecuteScalar();
+                                        }
+
+                                        //KULLANICI EKLEME
+
+                                        saatEkle = TimeSpan.FromDays(365);
+                                        //gün ve saat ekleme
+                                        string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker4.Value.Add(saatEkle));//zamanı gün olarak arttırdık
+                                        if (baglanti.State == ConnectionState.Closed)
+                                            baglanti.Open();
+                                        string kayit = "insert into HotspotTBL(serverId,kullaniciAdi,sifre,email,sure,telNo) values (@serverId,@kullaniciAdi,@sifre,@email,@sure,@telNo)";
+                                        SqlCeCommand komut = new SqlCeCommand(kayit, baglanti);
+                                        komut.Parameters.AddWithValue("@serverId", svID);
+                                        komut.Parameters.AddWithValue("@kullaniciAdi", _Person.identityNumber);
+                                        komut.Parameters.AddWithValue("@sifre", _Person.roomName);
+                                        komut.Parameters.AddWithValue("@email", "");
+                                        komut.Parameters.AddWithValue("@sure", date);
+                                        komut.Parameters.AddWithValue("@telNo", "");
+                                        komut.ExecuteNonQuery();
+                                        baglanti.Close();
+
+                                        //
+                                    }
+                                }
+                                catch (Exception hata)
+                                {
+                                    MessageBox.Show("İşlem Sırasında Hata Oluştu." + hata.Message);
+                                }
+                            }
+                        }
+                        textBox15.Text = "";
+                    }
+                    if (File.Exists(Application.StartupPath + "\\User.json"))    //kullandıktan sonra json dosyasını sil..
+                    {
+                        File.Delete(Application.StartupPath + "\\User.json");
+                    }
+                }
+                catch (Exception h)
+                {
+                    MessageBox.Show("Kullanıcı Verileri Alınamadı. Otel Kodunuzu Tekrar Giriniz");
+                    label46.Text = "";
+                    Properties.Settings.Default["otelKodu"] = "";
+                    Properties.Settings.Default.Save();
+                    //timer2.Stop();
+                }
+                //
+            }
+            GenelSayfa_Load(sender, e);
+        }
+
+        private void listBox7_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox7.SelectedItem != null)
+            {
+                textBox5.Text = listBox7.SelectedItem.ToString();
+                try
+                {
+                    SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                    SqlCeCommand komut = new SqlCeCommand();
+                    if (baglanti.State == ConnectionState.Closed)
+                    {
+                        baglanti.Open();
+                    }
+                    komut.Connection = baglanti;
+                    komut.CommandText = "select * from ServerTBL where serverAdi='" + textBox5.Text + "'";
+                    komut.ExecuteNonQuery();
+                    SqlCeDataReader dr = komut.ExecuteReader();
+                    if (dr.Read())
+                    {
+                        svID = dr["serverId"].ToString();
+                        svIp = dr["ipAdres"].ToString();
+                        svKulAdi = dr["kullaniciAdi"].ToString();
+                        svSifre = dr["sifre"].ToString();
+                        textBox5.ReadOnly = true;
+                        button10.Enabled = true;
+                        textBox8.ReadOnly = false;
+                        textBox7.ReadOnly = false;
+                        textBox6.ReadOnly = false;
+                        //textBox7.ReadOnly = false;
+                        saatTxt.ReadOnly = false;
+                    }
+                    dr.Close();
+                }
+                catch (Exception hata)
+                {
+                    MessageBox.Show("Bir hata oluştu" + hata.Message);
+                }
+            }
         }
     }
 }

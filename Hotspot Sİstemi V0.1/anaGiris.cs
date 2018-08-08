@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
 using System.Data.SqlServerCe;
-
+using System.Diagnostics;
+using System.IO;
 
 namespace Hotspot_Sİstemi_V0._1
 {
@@ -59,7 +60,7 @@ namespace Hotspot_Sİstemi_V0._1
                 {
                     Properties.Settings.Default["kuladi"] = "";
                     Properties.Settings.Default["sifre"] = "";
-                    Properties.Settings.Default.Reset();
+                    Properties.Settings.Default.Save();
                 }
                 Properties.Settings.Default["yoneticiAdi"] = textBox1.Text;
             }
@@ -75,7 +76,7 @@ namespace Hotspot_Sİstemi_V0._1
         {
             sayac++;
 
-            if (sayac % 60 == 0)
+            if (sayac % 127 == 0)
             {
                 KullaniciSil kSil = new KullaniciSil();
                 kSil.kullanici_Sil();
@@ -85,6 +86,11 @@ namespace Hotspot_Sİstemi_V0._1
         private void anaGiris_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            Process.Start("http://hmsotel.com");
         }
     }
 }

@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using tik4net;
+using tik4net.Objects;
+using tik4net.Objects.Ip.Hotspot;
 
 namespace Hotspot_Sİstemi_V0._1
 {
@@ -87,44 +90,45 @@ namespace Hotspot_Sİstemi_V0._1
 
         public void kullaniciSifirla(DataGridView dg,ListBox listbox)
         {
-            SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
-            SqlCeCommand komut = new SqlCeCommand();
-            if (baglanti.State == ConnectionState.Closed)
+            try
             {
-                baglanti.Open();
-            }
-            komut.Connection = baglanti;
-            komut.CommandText = "select * from HotspotTBL H,ServerTBL S where S.serverAdi='"+listbox.SelectedItem+"'";
-            komut.ExecuteNonQuery();
-            SqlCeDataReader dr = komut.ExecuteReader();
-            while (dr.Read())
-            {
-                svId = dr["serverId"].ToString();
-                kullaniciAdi = dr["kullaniciAdi"].ToString();
-                //
-                ArsivEkle aEkle = new ArsivEkle();
-                aEkle.Listele(kullaniciAdi, svId);
-                //
+                SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
+                SqlCeCommand komut = new SqlCeCommand();
+                if (baglanti.State == ConnectionState.Closed)
+                {
+                    baglanti.Open();
+                }
+                komut.Connection = baglanti;
+                komut.CommandText = "select * from HotspotTBL H,ServerTBL S where S.serverAdi='" + listbox.SelectedItem + "'";
+                komut.ExecuteNonQuery();
+                SqlCeDataReader dr = komut.ExecuteReader();
+                while (dr.Read())
+                {
+                    svId = dr["serverId"].ToString();
+                    kullaniciAdi = dr["kullaniciAdi"].ToString();
+                    //
+                    ArsivEkle aEkle = new ArsivEkle();
+                    aEkle.Listele(kullaniciAdi, svId);
+                    //
+                }
+                dr.Close();
                 serverVeri();
-                MK mikrotik = new MK(svIp);
-                if (!mikrotik.Login(svKulAdi, svSifre))
+                using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
                 {
-                    MessageBox.Show("Bağlantı işlemi başarısız");
-                    mikrotik.Close();
-                    return;
+                    connection.Open(svIp, svKulAdi, svSifre);
+                    connection.DeleteAll<HotspotUser>();
                 }
-                else
-                {
-                    mikrotik.Send("/ip/hotspot/user/remove");
-                    mikrotik.Send("=.id=" + kullaniciAdi + "", true);
-                }
-            }
-            dr.Close();
-            komut.CommandText = "delete from HotspotTBL where serverId='" + svId + "'";
-            komut.ExecuteNonQuery();
-            ////
 
-            baglanti.Close();
+                komut.CommandText = "delete from HotspotTBL where serverId='" + svId + "'";
+                komut.ExecuteNonQuery();
+                ////
+                baglanti.Close();
+                //MessageBox.Show("Tüm Kullanıcılar Silindi", "Sıfırla", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("Zaten Tüm Kullanıcılar Silinmiş","Mesaj",MessageBoxButtons.OK,MessageBoxIcon.Question);
+            }
         }
     }
 }
