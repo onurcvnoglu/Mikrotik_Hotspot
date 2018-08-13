@@ -52,11 +52,11 @@ namespace Hotspot_Sİstemi_V0._1
 
             if (label46.Text!="")
             {
-                timer2.Start();
+                //timer2.Start();
             }
             else
             {
-                timer2.Stop();
+                //timer2.Stop();
             }
             tabControl1.TabPages.Remove(tabPage3);
             DosyaSil ds = new DosyaSil();
@@ -196,7 +196,6 @@ namespace Hotspot_Sİstemi_V0._1
             button10.Enabled = false;
             button11.Enabled = false;
             button12.Enabled = false;
-            //listBox1.Items.Clear();
             listBox4.Items.Clear();
             listBox3.Items.Clear();
             listBox6.Items.Clear();
@@ -255,7 +254,6 @@ namespace Hotspot_Sİstemi_V0._1
                         textBox8.ReadOnly = false;
                         textBox7.ReadOnly = false;
                         textBox6.ReadOnly = false;
-                        //textBox7.ReadOnly = false;
                         saatTxt.ReadOnly = false;
                     }
                     else
@@ -396,7 +394,6 @@ namespace Hotspot_Sİstemi_V0._1
 
         private void button9_Click(object sender, EventArgs e)
         {
-            //button4.Enabled = false;
             groupBox5.Visible = true;
             groupBox6.Visible = false;
             textBox5.ReadOnly = false;
@@ -415,7 +412,6 @@ namespace Hotspot_Sİstemi_V0._1
             groupBox5.Visible = false;
             kulSifreTxt.Text = "";
             emailTxt.Text = "";
-            //kAdiTxt.ReadOnly = false;
             textBox10.ReadOnly = false;
             svAdiTxt.ReadOnly = false;
             textBox10.Text = "";
@@ -469,7 +465,6 @@ namespace Hotspot_Sİstemi_V0._1
                     mikrotik.Send("=.id=" + textBox10.Text + "", true);
                 }
                 MessageBox.Show("Kullanıcı Silindi");
-                //groupBox2.Visible = false;
                 button11.Enabled = false;
                 button12.Enabled = false;
             }
@@ -509,10 +504,6 @@ namespace Hotspot_Sİstemi_V0._1
             {
                 MessageBox.Show("Boş alan bırakmayınız");
             }
-            //else if (textBox10.Text=="")
-            //{
-            //    MessageBox.Show("Önce Kullanıcı Seçiniz");
-            //}
             else
             {
                 try
@@ -521,12 +512,9 @@ namespace Hotspot_Sİstemi_V0._1
                     {
                         guncelSaatTxt.Text = "0";
                     }
-                    //TimeSpan gunEkle = TimeSpan.FromDays(Convert.ToInt32(guncelGunTxt.Text));
                     TimeSpan saatEkle = TimeSpan.FromHours(Convert.ToInt32(guncelSaatTxt.Text));
-                    //TimeSpan zamanEkle = gunEkle.Add(saatEkle);
                     string sure = dateTimePicker1.Text;
-                    string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker3.Value.Add(saatEkle)/*Convert.ToDateTime(sure).Add(zamanEkle)*/);//zamanı gün olarak güncelle
-                    //date = string.Format("{0:dd/MM/yyyy HH:mm:ss}", sure.AddHours(Convert.ToInt32(guncelSaatTxt.Text)));//zamanı saat olarak güncelle
+                    string date = string.Format("{0:yyyy/MM/dd HH:mm:ss}", dateTimePicker3.Value.Add(saatEkle));//zamanı gün olarak güncelle
                     SqlCeConnection baglanti = new SqlCeConnection(@"Data Source=Hotspot.sdf;Persist Security Info=False;");
                     SqlCeCommand cmd = new SqlCeCommand();
                     if (baglanti.State == ConnectionState.Closed)
@@ -1469,7 +1457,6 @@ namespace Hotspot_Sİstemi_V0._1
                     Properties.Settings.Default["otelKodu"] = otelKodu;
                     label46.Text = Properties.Settings.Default["otelKodu"].ToString();
                     Properties.Settings.Default.Save();
-                    timer2.Start();
                 }
                 catch (Exception)
                 {
@@ -1477,7 +1464,6 @@ namespace Hotspot_Sİstemi_V0._1
                     label46.Text = "";
                     Properties.Settings.Default["otelKodu"] = "";
                     Properties.Settings.Default.Save();
-                    timer2.Stop();
                 }
             }
         }
@@ -1627,7 +1613,6 @@ namespace Hotspot_Sİstemi_V0._1
                                         komut.Parameters.AddWithValue("@telNo", "");
                                         komut.ExecuteNonQuery();
                                         baglanti.Close();
-
                                         //
                                     }
                                 }
@@ -1650,7 +1635,7 @@ namespace Hotspot_Sİstemi_V0._1
                     label46.Text = "";
                     Properties.Settings.Default["otelKodu"] = "";
                     Properties.Settings.Default.Save();
-                    timer2.Stop();
+                    //timer2.Stop();
                 }
                 //
             }

@@ -110,24 +110,30 @@ namespace Hotspot_Sİstemi_V0._1
                     ArsivEkle aEkle = new ArsivEkle();
                     aEkle.Listele(kullaniciAdi, svId);
                     //
+                    serverVeri();
+                    MK mikrotik = new MK(svIp);
+                    if (!mikrotik.Login(svKulAdi, svSifre))
+                    {
+                        MessageBox.Show("Bağlantı işlemi başarısız");
+                        mikrotik.Close();
+                        return;
+                    }
+                    else
+                    {
+                        mikrotik.Send("/ip/hotspot/user/remove");
+                        mikrotik.Send("=.id=" + kullaniciAdi + "", true);
+                    }
                 }
                 dr.Close();
-                serverVeri();
-                using (ITikConnection connection = ConnectionFactory.CreateConnection(TikConnectionType.Api))
-                {
-                    connection.Open(svIp, svKulAdi, svSifre);
-                    connection.DeleteAll<HotspotUser>();
-                }
-
+                
                 komut.CommandText = "delete from HotspotTBL where serverId='" + svId + "'";
                 komut.ExecuteNonQuery();
                 ////
                 baglanti.Close();
-                //MessageBox.Show("Tüm Kullanıcılar Silindi", "Sıfırla", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             }
             catch (Exception)
             {
-                //MessageBox.Show("Zaten Tüm Kullanıcılar Silinmiş","Mesaj",MessageBoxButtons.OK,MessageBoxIcon.Question);
+
             }
         }
     }

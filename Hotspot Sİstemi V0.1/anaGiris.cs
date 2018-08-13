@@ -92,5 +92,13 @@ namespace Hotspot_Sİstemi_V0._1
         {
             Process.Start("http://hmsotel.com");
         }
+
+        private void anaGiris_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode==Keys.Enter)
+            {
+                button1_Click(sender, e);
+            }
+        }
     }
 }
